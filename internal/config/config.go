@@ -2,17 +2,18 @@ package config
 
 import (
     "os"
-    "path/filepath"
+    "log"
+    fp "path/filepath"
 )
 
 const (
     NAME = "jcms"
 )
 
-// OS env defaults
 var (
-    webapp = "default"
-    datadir = filepath.FromSlash ("/opt/jcms")
+    // OS env defaults
+    webapp = "devel"
+    datadir = fp.FromSlash ("/opt/jcms")
 )
 
 func getEnv (n, d string) string {
@@ -23,10 +24,26 @@ func getEnv (n, d string) string {
     return d
 }
 
+func absPath (p string) string {
+    rp, err := fp.Abs (fp.Clean (p))
+    if err != nil {
+        log.Fatalln ("E: config absPath:", p, "-", err)
+    }
+    return rp
+}
+
+func getDatadir () string {
+    return absPath (getEnv ("JCMS_DATADIR", datadir))
+}
+
 func Webapp () string {
     return getEnv ("JCMS_WEBAPP", webapp)
 }
 
-func Datadir () string {
-    return getEnv ("JCMS_DATADIR", datadir)
+func WebappDatadir () string {
+    return absPath (fp.Join (getDatadir(), Webapp ()))
+}
+
+func WebappDir () string {
+    return absPath (fp.Join (WebappDatadir(), "webapp"))
 }
