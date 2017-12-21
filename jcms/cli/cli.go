@@ -1,20 +1,24 @@
 package cli
 
 import (
+    "log"
     "github.com/zserge/webview"
     "github.com/jrmsdev/go-jcms/jcms"
+    "github.com/jrmsdev/go-jcms/internal/config"
+)
+
+const (
+    webviewResize = true
+    webviewWidth = 800
+    webviewHeight = 600
 )
 
 func Webview () {
     uri := jcms.Listen ()
-
     go func() {
         jcms.Serve ()
     }()
-    println (uri)
-
-    resize := true
-    webview.Open ("jcms", uri, 800, 600, resize)
-
+    log.Println ("webview: open")
+    webview.Open (config.NAME, uri, webviewWidth, webviewHeight, webviewResize)
     jcms.Stop ()
 }
