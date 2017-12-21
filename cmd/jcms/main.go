@@ -1,11 +1,9 @@
 package main
 
 import (
-    "github.com/jrmsdev/go-jcms/jcms"
+    "github.com/jrmsdev/go-jcms/jcms/cli"
 )
 
 func main () {
-    uri := jcms.Listen ()
-    println (uri)
-    jcms.Serve ()
+    cli.Webview ()
 }
