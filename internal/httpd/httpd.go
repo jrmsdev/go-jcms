@@ -29,6 +29,7 @@ func Listen () string {
 }
 
 func Serve () {
+    log.Println ("httpd: serve")
     if listener == nil {
         log.Fatalln ("nil listener... call httpd.Listen() first")
     }
@@ -40,6 +41,7 @@ func Serve () {
 }
 
 func Stop () {
+    log.Println ("httpd: stop")
     server.Close ()
 }
 
