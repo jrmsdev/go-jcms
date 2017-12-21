@@ -3,7 +3,7 @@ package jcms
 
 import (
     "github.com/jrmsdev/go-jcms/internal/httpd"
-    _ "github.com/jrmsdev/go-jcms/internal/webapps"
+    "github.com/jrmsdev/go-jcms/internal/webapps"
 )
 
 func Listen () string {
@@ -11,6 +11,7 @@ func Listen () string {
 }
 
 func Serve () {
+    webapps.Start ()
     httpd.Serve ()
 }
 
