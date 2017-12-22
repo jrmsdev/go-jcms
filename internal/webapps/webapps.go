@@ -26,10 +26,12 @@ func errHandler (msg string) {
 func Start () {
     log.Println ("webapps: start")
     var err error
+    var a *app.App
     // new app
-    if _, err = app.New (); err != nil {
+    if a, err = app.New (); err != nil {
         errHandler (err.Error ())
         return
     }
+    log.Println ("app:", a)
     mainHandler ()
 }
