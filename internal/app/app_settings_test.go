@@ -12,15 +12,23 @@ func TestSettings (t *testing.T) {
     if err != nil {
         t.Fatal (err)
     }
-    t.Logf ("%#v", s.XMLName)
-    if s.XMLName.Space != "" {
-        t.Error ("XMLName.Space should be an empty string")
+    testXMLName (t, s.XMLName)
+    testMarshalOutput (t, s)
+}
+
+func testXMLName (t *testing.T, xn xml.Name) {
+    t.Logf ("%#v", xn)
+    if xn.Space != "" {
+        t.Error (".Space should be an empty string")
     }
-    if s.XMLName.Local != "webapp" {
-        t.Error ("XMLName.Local != webapp")
+    if xn.Local != "webapp" {
+        t.Error (".Local != webapp")
     }
-    out, err2 := xml.Marshal (s)
-    if err2 != nil {
+}
+
+func testMarshalOutput (t *testing.T, s *Settings) {
+    out, err := xml.Marshal (s)
+    if err != nil {
         t.Fatal (err)
     }
     t.Log (string(out))

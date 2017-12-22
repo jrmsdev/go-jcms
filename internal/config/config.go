@@ -6,14 +6,19 @@ import (
     fp "path/filepath"
 )
 
-const (
-    NAME = "jcms"
-)
+const NAME = "jcms"
 
-var (
-    // OS env defaults - set as JCMS_<UPPERCASE_NAME> - ie: JCMS_WEBAPP
-    webapp = "default"
-)
+// OS env defaults - set as JCMS_<UPPERCASE_NAME> - ie: JCMS_WEBAPP
+// JCMS_BASEDIR env var is dinamically checked
+var webapp = "default"
+
+func WebappName () string {
+    return getEnv ("JCMS_WEBAPP", webapp)
+}
+
+func SettingsFile () string {
+    return absPath (fp.Join (webappDir (), "webapp.xml"))
+}
 
 func getEnv (n, d string) string {
     v, isSet := os.LookupEnv (n)
@@ -46,14 +51,6 @@ func baseDir () string {
     return absPath (v)
 }
 
-func WebappName () string {
-    return getEnv ("JCMS_WEBAPP", webapp)
-}
-
 func webappDir () string {
     return absPath (fp.Join (baseDir(), WebappName ()))
-}
-
-func SettingsFile () string {
-    return absPath (fp.Join (webappDir (), "webapp.xml"))
 }

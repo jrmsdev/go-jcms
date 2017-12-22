@@ -7,6 +7,7 @@ import (
 
 type Settings struct {
     XMLName xml.Name `xml:"webapp"`
+    home string `xml:"home"`
 }
 
 func newSettings (blob []byte) (*Settings, error) {
