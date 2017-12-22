@@ -1,9 +1,9 @@
 package main
 
 import (
-    "github.com/jrmsdev/go-jcms/jcms/cli"
+    "github.com/jrmsdev/go-jcms/internal/cli/webview"
 )
 
 func main () {
-    cli.Webview ()
+    webview.Main ()
 }
