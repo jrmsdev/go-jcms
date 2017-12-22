@@ -18,7 +18,7 @@ func WebappName () string {
 }
 
 func SettingsFile () string {
-    return absPath (fp.Join (webappDir (), "webapp.xml"))
+    return absPath (fp.Join (webappDir (), "settings.xml"))
 }
 
 func getEnv (n, d string) string {
