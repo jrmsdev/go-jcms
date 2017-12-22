@@ -24,12 +24,12 @@ func errHandler (msg string) {
 }
 
 func loadWebapp () error {
-    log.Println ("webapp:", config.Webapp ())
-    wadir := config.WebappDir ()
-    log.Println ("webapp:", wadir)
-    if !utils.DirExists (wadir) {
-        log.Println ("E: webapp:", wadir, "dir not found")
-        return errors.New ("dir not found")
+    log.Println ("webapp:", config.WebappName ())
+    settings := config.SettingsFile ()
+    log.Println ("webapp:", settings)
+    if !utils.FileExists (settings) {
+        log.Println ("E: webapp:", settings, "file not found")
+        return errors.New ("file not found: " + settings)
     }
     return nil
 }

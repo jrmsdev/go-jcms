@@ -32,18 +32,18 @@ func absPath (p string) string {
     return rp
 }
 
-func getDatadir () string {
+func baseDatadir () string {
     return absPath (getEnv ("JCMS_DATADIR", datadir))
 }
 
-func Webapp () string {
+func WebappName () string {
     return getEnv ("JCMS_WEBAPP", webapp)
 }
 
-func WebappDatadir () string {
-    return absPath (fp.Join (getDatadir(), Webapp ()))
+func Datadir () string {
+    return absPath (fp.Join (baseDatadir(), WebappName ()))
 }
 
-func WebappDir () string {
-    return absPath (fp.Join (WebappDatadir(), "webapp"))
+func SettingsFile () string {
+    return absPath (fp.Join (Datadir (), "webapp.xml"))
 }
