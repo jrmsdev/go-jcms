@@ -39,7 +39,7 @@ func baseDir () string {
     v, ok = os.LookupEnv ("GOPATH")
     if ok && v != "" {
         // TODO: support possible ':' separator in GOPATH
-        v = fp.Join (absPath (v), "github.com", "jrmsdev", "go-jcms", "apps")
+        v = fp.Join (absPath (v), "src", "github.com", "jrmsdev", "go-jcms", "apps")
     } else {
         v = getEnv ("GOPATH", fp.FromSlash ("/opt/jcms"))
     }
