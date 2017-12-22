@@ -8,8 +8,7 @@ import (
 func TestSettings (t *testing.T) {
     data := `<?xml version="1.0" encoding="UTF-8"?>
              <webapp><invalid></invalid></webapp>`
-    s := &Settings{}
-    err := xml.Unmarshal ([]byte(data), s)
+    s, err := newSettings ([]byte(data))
     if err != nil {
         t.Fatal (err)
     }
