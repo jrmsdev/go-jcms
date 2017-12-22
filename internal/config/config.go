@@ -11,9 +11,8 @@ const (
 )
 
 var (
-    // OS env defaults
+    // OS env defaults - set as JCMS_<UPPERCASE_NAME> - ie: JCMS_WEBAPP
     webapp = "devel"
-    datadir = fp.FromSlash ("/opt/jcms")
 )
 
 func getEnv (n, d string) string {
@@ -32,18 +31,29 @@ func absPath (p string) string {
     return rp
 }
 
-func baseDatadir () string {
-    return absPath (getEnv ("JCMS_DATADIR", datadir))
+func baseDir () string {
+    v, ok := os.LookupEnv ("JCMS_BASEDIR")
+    if ok && v != "" {
+        return absPath (v)
+    }
+    v, ok = os.LookupEnv ("GOPATH")
+    if ok && v != "" {
+        // TODO: support possible ':' separator in GOPATH
+        v = fp.Join (absPath (v), "github.com", "jrmsdev", "go-jcms", "apps")
+    } else {
+        v = getEnv ("GOPATH", fp.FromSlash ("/opt/jcms"))
+    }
+    return absPath (v)
 }
 
 func WebappName () string {
     return getEnv ("JCMS_WEBAPP", webapp)
 }
 
-func Datadir () string {
-    return absPath (fp.Join (baseDatadir(), WebappName ()))
+func webappDir () string {
+    return absPath (fp.Join (baseDir(), WebappName ()))
 }
 
 func SettingsFile () string {
-    return absPath (fp.Join (Datadir (), "webapp.xml"))
+    return absPath (fp.Join (webappDir (), "webapp.xml"))
 }

@@ -38,7 +38,7 @@ func Start () {
     log.Println ("webapps: start")
     var err error
     if err = loadWebapp (); err != nil {
-        errHandler ("webapp: " + err.Error ())
+        errHandler (err.Error ())
         return
     }
     mainHandler ()
