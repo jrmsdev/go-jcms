@@ -13,9 +13,9 @@ var listening = false
 func Listen () string {
     log.Printf ("%s version %s\n", rt.NAME, Version ())
     uri := httpd.Listen ()
-    log.Println ("URI:", uri)
+    log.Println ("URI:", uri.String ())
     listening = true
-    return uri
+    return uri.String ()
 }
 
 func Serve () {

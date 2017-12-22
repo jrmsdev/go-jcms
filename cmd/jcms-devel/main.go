@@ -2,7 +2,9 @@ package main
 
 import (
     "os"
-    "github.com/jrmsdev/go-jcms/jcms/cli"
+    "flag"
+    "path"
+    "github.com/jrmsdev/go-jcms/internal/cli/webview"
 )
 
 func main () {
@@ -14,5 +16,10 @@ func main () {
     if err := os.Setenv ("JCMS_BASEDIR", ""); err != nil {
         panic (err)
     }
-    cli.Webview ()
+    flag.Parse ()
+    req := path.Clean (flag.Arg (0))
+    if req == "." || req == "" {
+        req = "/"
+    }
+    webview.DevelMain (req)
 }

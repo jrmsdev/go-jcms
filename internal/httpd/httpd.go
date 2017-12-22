@@ -4,6 +4,7 @@ import (
     "log"
     "time"
     "net"
+    "net/url"
     "net/http"
 )
 
@@ -19,13 +20,17 @@ var server = &http.Server{
 	MaxHeaderBytes: 1 << 20,
 }
 
-func Listen () string {
+func Listen () *url.URL {
     var err error
     listener, err = net.Listen ("tcp4", addr)
     if err != nil {
         log.Fatalln (err)
     }
-    return "http://" + listener.Addr ().String () + "/"
+    url := &url.URL{}
+    url.Scheme = "http"
+    url.Host = listener.Addr ().String ()
+    url.Path = ""
+    return url
 }
 
 func Serve () {
