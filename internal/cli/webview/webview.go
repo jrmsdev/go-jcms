@@ -3,7 +3,6 @@ package webview
 import (
     "log"
     "net/url"
-    "strings"
     xwv "github.com/zserge/webview"
     "github.com/jrmsdev/go-jcms/jcms"
     "github.com/jrmsdev/go-jcms/internal/rt"
@@ -28,18 +27,11 @@ func doMain (req string) {
     if err != nil {
         panic (err)
     }
+    log.Println ("webview: req", req)
     go func() {
         jcms.Serve ()
     }()
-    log.Println ("webview: req", req)
-    if req != "/" {
-        if strings.HasPrefix (req, "/") {
-            req := strings.Replace (req, "/", "", 1)
-            log.Println ("webview: removed req / prefix:", req)
-        }
-        uri.Path = req
-        log.Println ("webview: final uri:", uri.String ())
-    }
+    uri.Path = req
     log.Println ("webview: open", uri.String ())
     xwv.Open (rt.NAME, uri.String (), webviewWidth, webviewHeight, webviewResize)
     jcms.Stop ()

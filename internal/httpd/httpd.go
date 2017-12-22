@@ -29,7 +29,7 @@ func Listen () *url.URL {
     url := &url.URL{}
     url.Scheme = "http"
     url.Host = listener.Addr ().String ()
-    url.Path = ""
+    url.Path = "/"
     return url
 }
 
