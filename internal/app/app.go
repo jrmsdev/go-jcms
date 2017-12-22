@@ -3,8 +3,8 @@ package app
 import (
     "log"
     "errors"
+    "github.com/jrmsdev/go-jcms/internal/rt"
     "github.com/jrmsdev/go-jcms/internal/utils"
-    "github.com/jrmsdev/go-jcms/internal/config"
 )
 
 type App struct {
@@ -13,7 +13,7 @@ type App struct {
 }
 
 func appLoad () (*Settings, error) {
-    fn := config.SettingsFile ()
+    fn := rt.SettingsFile ()
     log.Println ("app:", fn)
     if !utils.FileExists (fn) {
         return nil, errors.New ("file not found: " + fn)
@@ -22,7 +22,7 @@ func appLoad () (*Settings, error) {
 }
 
 func New () (*App, error) {
-    name := config.WebappName ()
+    name := rt.WebappName ()
     log.Println ("app:", name)
     cfg, err := appLoad ()
     if err != nil {

@@ -3,15 +3,15 @@ package jcms
 
 import (
     "log"
+    "github.com/jrmsdev/go-jcms/internal/rt"
     "github.com/jrmsdev/go-jcms/internal/httpd"
-    "github.com/jrmsdev/go-jcms/internal/config"
     "github.com/jrmsdev/go-jcms/internal/webapps"
 )
 
 var listening = false
 
 func Listen () string {
-    log.Printf ("%s version %s\n", config.NAME, Version ())
+    log.Printf ("%s version %s\n", rt.NAME, Version ())
     uri := httpd.Listen ()
     log.Println ("URI:", uri)
     listening = true

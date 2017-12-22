@@ -1,4 +1,5 @@
-package config
+// global runtime settings
+package rt
 
 import (
     "os"
