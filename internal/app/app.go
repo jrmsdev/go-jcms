@@ -9,6 +9,7 @@ import (
 
 type App struct {
     name string
+    cfg *Settings
 }
 
 func appLoad () (*Settings, error) {
@@ -21,10 +22,11 @@ func appLoad () (*Settings, error) {
 }
 
 func New () (*App, error) {
-    log.Println ("app:", config.WebappName ())
-    _, err := appLoad ()
+    name := config.WebappName ()
+    log.Println ("app:", name)
+    cfg, err := appLoad ()
     if err != nil {
         return nil, err
     }
-    return nil, nil
+    return &App{name, cfg}, nil
 }
