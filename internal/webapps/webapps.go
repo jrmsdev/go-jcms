@@ -2,36 +2,50 @@ package webapps
 
 import (
     "log"
-    "html"
     "net/http"
     "github.com/jrmsdev/go-jcms/internal/app"
     "github.com/jrmsdev/go-jcms/internal/httpd"
 )
 
-func mainHandler () {
-    httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("<html><body><p>welcome to jcms!</p></body></html>"))
-    })
-}
-
-func errHandler (msg string) {
-    log.Println ("ERROR:", msg)
-    httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("<html><body><h2>ERROR: "))
-        w.Write([]byte(html.EscapeString (msg)))
-        w.Write([]byte("</h2></body></html>"))
-    })
-}
-
 func Start () {
     log.Println ("webapps: start")
-    var err error
-    var a *app.App
-    // new app
-    if a, err = app.New (); err != nil {
-        errHandler (err.Error ())
+    a, err := app.New ()
+    if err != nil {
+        errHandler (err)
         return
     }
-    log.Println ("app:", a)
-    mainHandler ()
+    mainHandler (a)
+}
+
+func mainHandler (a *app.App) {
+    httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
+        log.Println ("main handler:", a)
+        resp := a.Handle (r)
+        if resp.IsError () {
+            respError (w, resp.Error ())
+        } else {
+            writeResp (w, resp)
+        }
+    })
+}
+
+func errHandler (err error) {
+    log.Println ("INTERNAL ERROR:", err.Error ())
+    httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
+        http.Error (w, "INTERNAL ERROR: " + err.Error (),
+                http.StatusInternalServerError)
+    })
+}
+
+func respError (w http.ResponseWriter, err *app.Error) {
+    http.Error (w, "ERROR: " + err.Error (), err.Status ())
+}
+
+func writeResp (w http.ResponseWriter, resp *app.Response) {
+    log.Println ("write response")
+    _, err := w.Write (resp.Body ())
+    if err != nil {
+        log.Println ("WARNING: ignored error writing response -",
+                err.Error ())
+    }
 }
