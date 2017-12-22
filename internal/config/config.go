@@ -12,7 +12,7 @@ const (
 
 var (
     // OS env defaults - set as JCMS_<UPPERCASE_NAME> - ie: JCMS_WEBAPP
-    webapp = "devel"
+    webapp = "default"
 )
 
 func getEnv (n, d string) string {
