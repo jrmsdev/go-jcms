@@ -23,7 +23,8 @@ func New () (*App, error) {
     if err != nil {
         return nil, err
     }
-    a := &App{name, s, views.Register (s.Views)}
+    reg := views.Register (s.Views)
+    a := &App{name, s, reg}
     return a, nil
 }
 
