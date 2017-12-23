@@ -24,8 +24,10 @@ func mainHandler (a *app.App) {
         ctx, cancel := appctx.New (r)
         defer cancel()
         resp := a.Handle (ctx)
-        if resp.IsError () {
+        if appctx.Failed (ctx) {
             respError (w, resp.Error ())
+        } else if appctx.Redirect (ctx) {
+            respRedirect (w, resp)
         } else {
             writeResp (w, resp)
         }
@@ -43,6 +45,10 @@ func errHandler (err error) {
 func respError (w http.ResponseWriter, err *app.Error) {
     log.Println ("ERROR:", err.Error ())
     http.Error (w, "ERROR: " + err.Error (), err.Status ())
+}
+
+func respRedirect (w http.ResponseWriter, resp *app.Response) {
+    // TODO: ...
 }
 
 func writeResp (w http.ResponseWriter, resp *app.Response) {
