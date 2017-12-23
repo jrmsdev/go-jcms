@@ -1,7 +1,9 @@
 package views
 
 import (
-    "path"
+    "fmt"
+    "log"
+    xpath "path"
 )
 
 type Registry struct {
@@ -14,9 +16,18 @@ func Register (vlist []*View) *Registry {
     r.db = make (map[string]*View)
     r.idx = make (map[string]string)
     for _, v := range vlist {
-        v.Path = path.Clean (v.Path) // clean path, it comes from settings.xml
+        v.Path = xpath.Clean (v.Path) // clean path, it comes from settings.xml
         r.db[v.Name] = v
         r.idx[v.Path] = v.Name
     }
     return r
+}
+
+func (r *Registry) Get (path string) (*View, error) {
+    idx, found := r.idx[path]
+    if !found {
+        log.Println ("view: not found", path)
+        return nil, fmt.Errorf ("view: not found %s", path)
+    }
+    return r.db[idx], nil
 }

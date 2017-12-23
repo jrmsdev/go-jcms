@@ -26,9 +26,12 @@ func Failed (ctx context.Context) bool {
     return getBool (ctx, ctxFail)
 }
 
-func Request (ctx context.Context) (*http.Request, bool) {
+func Request (ctx context.Context) *http.Request {
     req, ok := ctx.Value (ctxReq).(*http.Request)
-    return req, ok
+    if !ok {
+        return nil
+    }
+    return req
 }
 
 func SetRedirect (ctx context.Context) context.Context {

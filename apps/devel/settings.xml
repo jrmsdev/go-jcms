@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <webapp>
     <view path="/"          name="home" home="true" />
+    <view path="/test"      name="testing" />
     <view path="/about"     name="about" />
     <view path="/contact"   name="contact" />
 </webapp>
