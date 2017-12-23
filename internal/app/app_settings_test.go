@@ -1,19 +1,10 @@
 package app
 
 import (
-    "os"
     "testing"
     "encoding/xml"
-    "path/filepath"
     "github.com/jrmsdev/go-jcms/internal/rt"
 )
-
-func init () {
-    os.Setenv ("JCMS_WEBAPP", "devel")
-    os.Setenv ("JCMS_BASEDIR",
-            filepath.Join (os.Getenv ("GOPATH"),
-                    "src", "github.com", "jrmsdev", "go-jcms", "apps"))
-}
 
 func TestSettings (t *testing.T) {
     data := `<?xml version="1.0" encoding="UTF-8"?>
