@@ -4,8 +4,16 @@ import (
     "os"
     "testing"
     "encoding/xml"
+    "path/filepath"
     "github.com/jrmsdev/go-jcms/internal/rt"
 )
+
+func init () {
+    os.Setenv ("JCMS_WEBAPP", "devel")
+    os.Setenv ("JCMS_BASEDIR",
+            filepath.Join (os.Getenv ("GOPATH"),
+                    "src", "github.com", "jrmsdev", "go-jcms", "apps"))
+}
 
 func TestSettings (t *testing.T) {
     data := `<?xml version="1.0" encoding="UTF-8"?>
@@ -40,9 +48,7 @@ func testMarshalOutput (t *testing.T, s *Settings) {
 }
 
 func TestDevelSettings (t *testing.T) {
-    os.Setenv ("JCMS_WEBAPP", "devel")
     fn := rt.SettingsFile ()
-    os.Setenv ("JCMS_WEBAPP", "")
     t.Log (fn)
     s, err := readSettings (fn)
     if err != nil {

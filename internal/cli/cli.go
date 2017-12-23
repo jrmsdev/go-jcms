@@ -1,11 +1,11 @@
-package webview
+package cli
 
 import (
     "log"
     "net/url"
     xwv "github.com/zserge/webview"
-    "github.com/jrmsdev/go-jcms/jcms"
     "github.com/jrmsdev/go-jcms/internal/rt"
+    "github.com/jrmsdev/go-jcms/internal/core"
 )
 
 const (
@@ -15,24 +15,21 @@ const (
 )
 
 func Main () {
-    doMain ("/")
+    core.Listen ()
+    core.Serve ()
 }
 
-func DevelMain (req string) {
-    doMain (req)
-}
-
-func doMain (req string) {
-    uri, err := url.Parse (jcms.Listen ())
+func Webview (req string) {
+    uri, err := url.Parse (core.Listen ())
     if err != nil {
-        panic (err)
+        log.Fatalln (err)
     }
     log.Println ("webview: req", req)
     go func() {
-        jcms.Serve ()
+        core.Serve ()
     }()
     uri.Path = req
     log.Println ("webview: open", uri.String ())
     xwv.Open (rt.NAME, uri.String (), webviewWidth, webviewHeight, webviewResize)
-    jcms.Stop ()
+    core.Stop ()
 }

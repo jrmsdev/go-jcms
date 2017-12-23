@@ -2,9 +2,13 @@
 package cli
 
 import (
-    "github.com/jrmsdev/go-jcms/internal/cli/webview"
+    "github.com/jrmsdev/go-jcms/internal/cli"
 )
 
 func Main () {
-    webview.Main ()
+    cli.Main ()
+}
+
+func Webview (uri string) {
+    cli.Webview (uri)
 }

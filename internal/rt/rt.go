@@ -39,17 +39,11 @@ func absPath (p string) string {
 
 func baseDir () string {
     v, ok := os.LookupEnv ("JCMS_BASEDIR")
-    if ok && v != "" {
-        return absPath (v)
+    v = absPath (v)
+    if ok && v != "." {
+        return v
     }
-    v, ok = os.LookupEnv ("GOPATH")
-    if ok && v != "" {
-        // TODO: support possible ':' separator in GOPATH
-        v = fp.Join (absPath (v), "src", "github.com", "jrmsdev", "go-jcms", "apps")
-    } else {
-        v = getEnv ("GOPATH", fp.FromSlash ("/opt/jcms"))
-    }
-    return absPath (v)
+    return fp.FromSlash ("/opt/jcms")
 }
 
 func webappDir () string {

@@ -18,8 +18,8 @@ func Start () {
 }
 
 func mainHandler (a *app.App) {
+    log.Println ("main handler:", a)
     httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
-        log.Println ("main handler:", a)
         resp := a.Handle (r)
         if resp.IsError () {
             respError (w, resp.Error ())
@@ -30,14 +30,15 @@ func mainHandler (a *app.App) {
 }
 
 func errHandler (err error) {
-    log.Println ("INTERNAL ERROR:", err.Error ())
     httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
+        log.Println ("INTERNAL ERROR:", err.Error ())
         http.Error (w, "INTERNAL ERROR: " + err.Error (),
                 http.StatusInternalServerError)
     })
 }
 
 func respError (w http.ResponseWriter, err *app.Error) {
+    log.Println ("ERROR:", err.Error ())
     http.Error (w, "ERROR: " + err.Error (), err.Status ())
 }
 
@@ -45,7 +46,6 @@ func writeResp (w http.ResponseWriter, resp *app.Response) {
     log.Println ("write response")
     _, err := w.Write (resp.Body ())
     if err != nil {
-        log.Println ("WARNING: ignored error writing response -",
-                err.Error ())
+        log.Fatalln ("PANIC: write response:", err.Error ())
     }
 }
