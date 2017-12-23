@@ -5,6 +5,7 @@ import (
     "net/http"
     "github.com/jrmsdev/go-jcms/internal/app"
     "github.com/jrmsdev/go-jcms/internal/httpd"
+    "github.com/jrmsdev/go-jcms/internal/context/appctx"
 )
 
 func Start () {
@@ -20,7 +21,9 @@ func Start () {
 func mainHandler (a *app.App) {
     log.Println ("main handler:", a)
     httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
-        resp := a.Handle (r)
+        ctx, cancel := appctx.New (r)
+        defer cancel()
+        resp := a.Handle (ctx)
         if resp.IsError () {
             respError (w, resp.Error ())
         } else {

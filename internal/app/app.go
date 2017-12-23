@@ -4,10 +4,11 @@ import (
     "log"
     "fmt"
     "errors"
-    "net/http"
+    "context"
     "github.com/jrmsdev/go-jcms/internal/rt"
     "github.com/jrmsdev/go-jcms/internal/utils"
     "github.com/jrmsdev/go-jcms/internal/views"
+    //~ "github.com/jrmsdev/go-jcms/internal/context/appctx"
 )
 
 type App struct {
@@ -41,7 +42,7 @@ func (a *App) String () string {
     return fmt.Sprintf ("<app:%s>", a.name)
 }
 
-func (a *App) Handle (req *http.Request) *Response {
+func (a *App) Handle (ctx context.Context) *Response {
     // TODO: ...
     resp := newResponse ()
     resp.Write("<html><body><p>YEAH!!!</p></body></html>")
