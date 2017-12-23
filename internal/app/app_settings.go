@@ -3,11 +3,12 @@ package app
 import (
     "io/ioutil"
     "encoding/xml"
+    "github.com/jrmsdev/go-jcms/internal/views"
 )
 
 type Settings struct {
     XMLName xml.Name `xml:"webapp"`
-    home string `xml:"home"`
+    Views []*views.View `xml:"view"`
 }
 
 func newSettings (blob []byte) (*Settings, error) {
