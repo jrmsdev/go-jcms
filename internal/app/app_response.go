@@ -36,5 +36,7 @@ func (r *Response) Write (s string) error {
 }
 
 func (r *Response) Body () []byte {
-    return r.buf.Bytes ()
+    b := r.buf.Bytes ()
+    r.buf.Reset ()
+    return b
 }
