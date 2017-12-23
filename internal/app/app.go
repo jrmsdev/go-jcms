@@ -23,12 +23,17 @@ func New () (*App, error) {
     if err != nil {
         return nil, err
     }
-    a := &App{name, s, &views.Registry{}}
-    //~ err = a.registerViews ()
-    if err != nil {
-        return nil, err
-    }
+    a := &App{name, s, views.Register (s.Views)}
     return a, nil
+}
+
+func getSettings () (*Settings, error) {
+    fn := rt.SettingsFile ()
+    log.Println ("app:", fn)
+    if !utils.FileExists (fn) {
+        return nil, errors.New ("file not found: " + fn)
+    }
+    return readSettings (fn)
 }
 
 func (a *App) String () string {
@@ -40,13 +45,4 @@ func (a *App) Handle (req *http.Request) *Response {
     resp := newResponse ()
     resp.Write("<html><body><p>YEAH!!!</p></body></html>")
     return resp
-}
-
-func getSettings () (*Settings, error) {
-    fn := rt.SettingsFile ()
-    log.Println ("app:", fn)
-    if !utils.FileExists (fn) {
-        return nil, errors.New ("file not found: " + fn)
-    }
-    return readSettings (fn)
 }
