@@ -23,7 +23,7 @@ func mainHandler (a *app.App) {
     httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
         ctx, cancel := appctx.New (r)
         defer cancel()
-        resp := a.Handle (ctx)
+        resp, ctx := a.Handle (ctx)
         if appctx.Failed (ctx) {
             respError (w, resp.Error ())
         } else if appctx.Redirect (ctx) {
@@ -48,7 +48,7 @@ func respError (w http.ResponseWriter, err *app.Error) {
 }
 
 func respRedirect (w http.ResponseWriter, resp *app.Response) {
-    // TODO: ...
+    // TODO: redirect response
 }
 
 func writeResp (w http.ResponseWriter, resp *app.Response) {

@@ -8,6 +8,7 @@ import (
     "github.com/jrmsdev/go-jcms/internal/rt"
     "github.com/jrmsdev/go-jcms/internal/utils"
     "github.com/jrmsdev/go-jcms/internal/views"
+    "github.com/jrmsdev/go-jcms/internal/doctype"
     "github.com/jrmsdev/go-jcms/internal/context/appctx"
 )
 
@@ -33,13 +34,31 @@ func (a *App) String () string {
     return fmt.Sprintf ("<app:%s>", a.name)
 }
 
-func (a *App) Handle (ctx context.Context) *Response {
+func (a *App) Handle (ctx context.Context) (*Response, context.Context) {
+    var (
+        err error
+        view *views.View
+        eng doctype.Engine
+    )
     req := appctx.Request (ctx)
-    a.findView (req.URL.Path) // check error / not found
-    // TODO: check view doctype and handle request
+    view, err = a.findView (req.URL.Path)
     resp := newResponse ()
+    if err != nil {
+        resp.SetError (500, err.Error ())
+        ctx = appctx.Fail (ctx)
+        return resp, ctx
+    }
+    log.Println ("app: view doctype", view.Doctype)
+    // TODO: check view doctype and handle request
+    eng, err = doctype.GetEngine (view.Doctype)
+    if err != nil {
+        resp.SetError (500, err.Error ())
+        ctx = appctx.Fail (ctx)
+        return resp, ctx
+    }
+    log.Println ("app: view engine", eng.String ())
     resp.Write("<html><body><p>YEAH!!!</p></body></html>")
-    return resp
+    return resp, ctx
 }
 
 func (a *App) findView (path string) (*views.View, error) {

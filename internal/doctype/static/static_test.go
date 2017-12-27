@@ -6,7 +6,10 @@ import (
 )
 
 func TestEngine (t *testing.T) {
-    e := New ()
+    e, err := doctype.GetEngine ("static")
+    if err != nil {
+        t.Fatal (err)
+    }
     t.Log (e)
     testType (t, e)
 }

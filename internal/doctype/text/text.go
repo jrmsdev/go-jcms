@@ -1,11 +1,18 @@
 package text
 
-import "github.com/jrmsdev/go-jcms/internal/doctype/base"
+import (
+    "github.com/jrmsdev/go-jcms/internal/doctype"
+    "github.com/jrmsdev/go-jcms/internal/doctype/base"
+)
 
-type Engine struct {
+func init () {
+    doctype.Register ("text", newEngine ())
+}
+
+type engine struct {
     base.Engine
 }
 
-func New () *Engine {
-    return &Engine {base.New ("text")}
+func newEngine () *engine {
+    return &engine {base.New ("text")}
 }

@@ -19,8 +19,8 @@ func newResponse () *Response {
     return r
 }
 
-func (r *Response) IsError () bool {
-    return r.err != nil
+func (r *Response) SetError (status int, msg string) {
+    r.err = newError (status, msg)
 }
 
 func (r *Response) Error () *Error {
