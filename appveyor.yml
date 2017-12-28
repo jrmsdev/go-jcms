@@ -6,7 +6,7 @@ clone_folder: c:\golang\src\github.com\jrmsdev\go-jcms
 
 environment:
   global:
-    GOPATH: C:\gopath
+    GOPATH: C:\golang
   matrix:
     - GETH_ARCH: amd64
       GOARCH: amd64
@@ -32,7 +32,7 @@ install:
   - gcc --version
 
 build_script:
-  - go build ./cmd/...
+  - go build ./jcms
 
 test_script:
   - go test ./...

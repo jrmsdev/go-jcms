@@ -6,20 +6,11 @@ go:
 matrix:
   include:
     - os: linux
-      addons:
-        apt:
-          packages:
-            - libwebkitgtk-3.0-dev
     - os: osx
       osx_image: xcode8.3
 
 install:
-  - go version
-  - go env
-  - gcc --version
-
-before_script:
-  - go build ./cmd/...
+  - go build ./jcms
 
 script:
   - go test ./...
