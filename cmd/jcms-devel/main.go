@@ -6,7 +6,7 @@ import (
     "flag"
     "path"
     "path/filepath"
-    "github.com/jrmsdev/go-jcms/jcms/cli"
+    "github.com/jrmsdev/go-jcms/cli"
 )
 
 func main () {

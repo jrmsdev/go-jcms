@@ -1,3 +1,4 @@
+// public cmd API
 package cli
 
 import (

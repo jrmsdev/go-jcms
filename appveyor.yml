@@ -35,4 +35,4 @@ build_script:
   - go build ./jcms
 
 test_script:
-  - go test ./...
+  - go test ./internal/... ./jcms
