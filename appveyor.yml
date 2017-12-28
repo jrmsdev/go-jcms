@@ -24,7 +24,6 @@ environment:
       PATH: C:\msys64\mingw32\bin\;C:\Program Files (x86)\NSIS\;%PATH%
 
 install:
-  - echo %PATH%
   - echo %GOPATH%
   - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
   - go version
