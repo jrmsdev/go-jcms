@@ -1,5 +1,7 @@
 package base
 
+import "fmt"
+
 type Engine struct {
     dtype string
 }
@@ -13,5 +15,5 @@ func (e *Engine) Type () string {
 }
 
 func (e *Engine) String () string {
-    return "<doctype.engine:" + e.dtype + ">"
+    return fmt.Sprintf ("doctype.%s", e.dtype)
 }

@@ -3,8 +3,8 @@ package app
 import (
     "log"
     "fmt"
-    "errors"
     "context"
+    "net/http"
     "github.com/jrmsdev/go-jcms/internal/rt"
     "github.com/jrmsdev/go-jcms/internal/utils"
     "github.com/jrmsdev/go-jcms/internal/views"
@@ -34,31 +34,32 @@ func (a *App) String () string {
     return fmt.Sprintf ("<app:%s>", a.name)
 }
 
-func (a *App) Handle (ctx context.Context) (*Response, context.Context) {
+func (a *App) Handle (ctx context.Context) context.Context {
     var (
         err error
         view *views.View
         eng doctype.Engine
     )
+    resp := appctx.Response (ctx)
     req := appctx.Request (ctx)
+
     view, err = a.findView (req.URL.Path)
-    resp := newResponse ()
     if err != nil {
-        resp.SetError (500, err.Error ())
+        resp.SetError (http.StatusNotFound, err.Error ())
         ctx = appctx.Fail (ctx)
-        return resp, ctx
+        return ctx
     }
+
     log.Println ("app: view doctype", view.Doctype)
-    // TODO: check view doctype and handle request
     eng, err = doctype.GetEngine (view.Doctype)
     if err != nil {
-        resp.SetError (500, err.Error ())
+        resp.SetError (http.StatusInternalServerError, err.Error ())
         ctx = appctx.Fail (ctx)
-        return resp, ctx
+        return ctx
     }
+
     log.Println ("app: view engine", eng.String ())
-    resp.Write("<html><body><p>YEAH!!!</p></body></html>")
-    return resp, ctx
+    return eng.Handle (ctx)
 }
 
 func (a *App) findView (path string) (*views.View, error) {
@@ -69,7 +70,7 @@ func getSettings () (*Settings, error) {
     fn := rt.SettingsFile ()
     log.Println ("app:", fn)
     if !utils.FileExists (fn) {
-        return nil, errors.New ("file not found: " + fn)
+        return nil, fmt.Errorf ("file not found: %s", fn)
     }
     return readSettings (fn)
 }

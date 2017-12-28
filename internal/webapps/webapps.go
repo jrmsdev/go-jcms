@@ -5,6 +5,7 @@ import (
     "net/http"
     "github.com/jrmsdev/go-jcms/internal/app"
     "github.com/jrmsdev/go-jcms/internal/httpd"
+    "github.com/jrmsdev/go-jcms/internal/response"
     "github.com/jrmsdev/go-jcms/internal/context/appctx"
 )
 
@@ -20,14 +21,15 @@ func Start () {
 
 func mainHandler (a *app.App) {
     log.Println ("main handler:", a)
-    httpd.HandleFunc ("/", func(w http.ResponseWriter, r *http.Request) {
-        ctx, cancel := appctx.New (r)
+    httpd.HandleFunc ("/", func(w http.ResponseWriter, req *http.Request) {
+        resp := response.New ()
+        ctx, cancel := appctx.New (req, resp)
         defer cancel()
-        resp, ctx := a.Handle (ctx)
+        ctx = a.Handle (ctx)
         if appctx.Failed (ctx) {
-            respError (w, resp.Error ())
+            respError (w, resp)
         } else if appctx.Redirect (ctx) {
-            respRedirect (w, resp)
+            respRedirect (w, req, resp)
         } else {
             writeResp (w, resp)
         }
@@ -42,16 +44,17 @@ func errHandler (err error) {
     })
 }
 
-func respError (w http.ResponseWriter, err *app.Error) {
-    log.Println ("ERROR:", err.Error ())
-    http.Error (w, "ERROR: " + err.Error (), err.Status ())
+func respError (w http.ResponseWriter, resp *response.Response) {
+    log.Println ("ERROR:", resp.Error ())
+    http.Error (w, "ERROR: " + resp.Error (), resp.Status ())
 }
 
-func respRedirect (w http.ResponseWriter, resp *app.Response) {
+func respRedirect (w http.ResponseWriter, r *http.Request, resp *response.Response) {
     // TODO: redirect response
+    //~ http.Redirect (w, r, resp.Location (), resp.Status ())
 }
 
-func writeResp (w http.ResponseWriter, resp *app.Response) {
+func writeResp (w http.ResponseWriter, resp *response.Response) {
     log.Println ("write response")
     _, err := w.Write (resp.Body ())
     if err != nil {
