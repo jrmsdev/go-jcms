@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import os
 from os import path
 from tempfile import mkstemp
@@ -120,7 +121,11 @@ if __name__ == '__main__':
     global INDEX_FH
     INDEX_FH = open ('coverage.html', 'w')
     print (HTML_HEAD, file = INDEX_FH)
-    for pkg in check_output ('go list ./...'.split ()).decode ().splitlines ():
-        testcover (pkg)
+    if len (sys.argv) < 2:
+        for pkg in check_output(['go', 'list', './...']).decode().splitlines():
+            testcover (pkg)
+    else:
+        testcover (path.join ('github.com', 'jrmsdev', 'go-jcms', sys.argv[1]))
     print (HTML_TAIL, file = INDEX_FH)
     INDEX_FH.close ()
+    sys.exit (0)
