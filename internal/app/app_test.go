@@ -2,6 +2,7 @@ package app
 
 import (
     "os"
+    "fmt"
     "testing"
     //~ "context"
     "net/url"
@@ -36,6 +37,16 @@ func TestViewNotFound (t *testing.T) {
     v, err := a.findView (req.URL.Path)
     if err == nil {
         t.Fatal ("found view:", v.Name)
+    }
+}
+
+func TestNewApp (t *testing.T) {
+    a, err := New ()
+    if err != nil {
+        t.Fatal (err)
+    }
+    if a.String () != fmt.Sprintf ("app.%s", a.name) {
+        t.Error ("a.String != app.<name>")
     }
 }
 

@@ -31,7 +31,7 @@ func New () (*App, error) {
 }
 
 func (a *App) String () string {
-    return fmt.Sprintf ("<app:%s>", a.name)
+    return fmt.Sprintf ("app.%s", a.name)
 }
 
 func (a *App) Handle (ctx context.Context) context.Context {
