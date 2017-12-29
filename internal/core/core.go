@@ -9,6 +9,7 @@ import (
 )
 
 var listening = false
+var webappsStarted = false
 
 func Listen () string {
     log.Printf ("%s version %s\n", rt.NAME, version.String ())
@@ -20,7 +21,10 @@ func Listen () string {
 
 func Serve () {
     if listening {
-        webapps.Start ()
+        if !webappsStarted {
+            webapps.Start ()
+            webappsStarted = true
+        }
         httpd.Serve ()
     } else {
         log.Fatalln ("E: call jcms.Listen() first")
