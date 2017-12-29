@@ -83,19 +83,31 @@ COVMISS = '''
     <td><span class="cov0">[no test files]</span></td>
 </tr>
 '''
+COVERR = '''
+<tr>
+    <td><span class="cov0">{}</span>
+    <td><span class="cov0">FAIL</span></td>
+</tr>
+'''
 
 def testcover (pkg):
     oldwd = os.getcwd ()
     os.chdir (path.join (GOPATH, 'src', pkg))
-    outfd, outfn = mkstemp (prefix = 'go-jcms.test.coverage')
+    errfd, errfn = mkstemp (prefix = 'go-jcms.test.coverage.out')
+    outfd, outfn = mkstemp (prefix = 'go-jcms.test.coverage.err')
     try:
         check_call ('go test -coverprofile coverage.out'.split (),
-                stderr = outfd, stdout = outfd)
+                stderr = errfd, stdout = outfd)
     except CalledProcessError:
+        fh = open (errfn, 'r')
+        print (fh.read (), end = '')
+        fh.close ()
+        os.unlink (errfn)
         fh = open (outfn, 'r')
         print (fh.read (), end = '')
         fh.close ()
         os.unlink (outfn)
+        coverr (pkg)
         return
     if path.isfile ('coverage.out'):
         check_call ('go tool cover -html coverage.out -o coverage.html'.split ())
@@ -106,6 +118,7 @@ def testcover (pkg):
     print (fh.read (), end = '')
     fh.close ()
     os.unlink (outfn)
+    os.unlink (errfn)
     os.chdir (oldwd)
 
 def covdone (pkg, outfn):
@@ -121,6 +134,9 @@ def covdone (pkg, outfn):
 
 def covmiss (pkg):
     print (COVMISS.format (pkg), file = INDEX_FH)
+
+def coverr (pkg):
+    print (COVERR.format (pkg), file = INDEX_FH)
 
 if __name__ == '__main__':
     global INDEX_FH
