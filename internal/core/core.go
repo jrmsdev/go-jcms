@@ -32,7 +32,7 @@ func Stop () {
         httpd.Stop ()
         listening = false
     } else {
-        log.Fatalln ("E: trying to stop a not listening server...")
+        log.Println ("E: trying to stop a not listening server...")
         log.Fatalln ("E: jcms.Listen() and jcms.Server() should be called first")
     }
 }
