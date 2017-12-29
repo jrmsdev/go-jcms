@@ -6,7 +6,7 @@ import (
     "github.com/jrmsdev/go-jcms/internal/rt"
 )
 
-func TestSettings (t *testing.T) {
+func TestNewSettings (t *testing.T) {
     data := `<?xml version="1.0" encoding="UTF-8"?>
              <webapp><invalid></invalid></webapp>`
     s, err := newSettings ([]byte(data))
@@ -38,7 +38,16 @@ func testMarshalOutput (t *testing.T, s *Settings) {
     }
 }
 
-func TestDevelSettings (t *testing.T) {
+func TestNewSettingsError (t *testing.T) {
+    data := `<?xml version="1.0" encoding="UTF-8"?>
+             <webapp><invalid></invalid></`
+    _, err := newSettings ([]byte(data))
+    if err == nil {
+        t.Error ("xml unmarshal should have failed")
+    }
+}
+
+func TestReadSettings (t *testing.T) {
     fn := rt.SettingsFile ()
     t.Log (fn)
     s, err := readSettings (fn)
@@ -53,5 +62,12 @@ func testDevelViews (t *testing.T, s *Settings) {
     for _, v := range s.Views {
         testXMLName (t, v.XMLName, "view")
         t.Log (v)
+    }
+}
+
+func TestReadSettingsError (t *testing.T) {
+    _, err := readSettings ("/invalid/file/name")
+    if err == nil {
+        t.Error ("ioutil.Readfile should have failed")
     }
 }
