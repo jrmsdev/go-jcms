@@ -6,6 +6,7 @@ import (
     "net"
     "net/url"
     "net/http"
+    "context"
 )
 
 var addr = "127.0.0.1:0"
@@ -47,7 +48,12 @@ func Serve () {
 
 func Stop () {
     log.Println ("httpd: stop")
-    server.Close ()
+    ctx, cancel := context.WithTimeout (context.Background (), 10 * time.Second)
+    defer cancel ()
+    err := server.Shutdown (ctx)
+    if err != nil {
+        log.Println ("E: httpd shutdown:", err)
+    }
 }
 
 func HandleFunc (prefix string, fn func(http.ResponseWriter, *http.Request)) {
