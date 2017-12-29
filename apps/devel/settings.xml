@@ -15,11 +15,11 @@
     <view
         path="/test"
         name="testing"
-        doctype="index.views"
+        doctype="text"
     />
     <view
-        path="/test/static"
-        name="test.static"
-        doctype="static"
+        path="/test/doctype.engine.invalid"
+        name="test.doctype.engine.invalid"
+        doctype="invalid.engine"
     />
 </webapp>

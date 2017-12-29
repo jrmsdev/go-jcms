@@ -4,11 +4,12 @@ import (
     "os"
     "fmt"
     "testing"
-    //~ "context"
+    "context"
     "net/url"
     "net/http"
     "path/filepath"
-    //~ "github.com/jrmsdev/go-jcms/internal/context/appctx"
+    "github.com/jrmsdev/go-jcms/internal/response"
+    "github.com/jrmsdev/go-jcms/internal/context/appctx"
 )
 
 func init () {
@@ -67,12 +68,61 @@ func setEnv (appname string) {
                     "src", "github.com", "jrmsdev", "go-jcms", "apps"))
 }
 
-//~ func getCtx (req *http.Request) (context.Context, context.CancelFunc) {
-    //~ return appctx.New (req)
-//~ }
-
 func getReq (path string) *http.Request {
     req := &http.Request{}
     req.URL, _ = url.Parse ("http://127.0.0.1:0" + path)
     return req
+}
+
+func getCtx (path string) (context.Context, context.CancelFunc) {
+    return appctx.New (getReq (path), response.New ())
+}
+
+func TestAppHandle (t *testing.T) {
+    ctx, cancel := getCtx ("/test")
+    defer cancel()
+    a, err := New ()
+    if err != nil {
+        t.Fatal (err)
+    }
+    ctx = a.Handle (ctx)
+    if appctx.Failed (ctx) {
+        t.Error ("app.Handle should not fail")
+    }
+}
+
+func TestAppHandleViewNotFound (t *testing.T) {
+    ctx, cancel := getCtx ("/test/view.not.found")
+    defer cancel()
+    a, err := New ()
+    if err != nil {
+        t.Fatal (err)
+    }
+    ctx = a.Handle (ctx)
+    if !appctx.Failed (ctx) {
+        t.Fatal ("app.Handle should fail")
+    }
+    resp := appctx.Response (ctx)
+    if resp.Error () != "view: not found /test/view.not.found" {
+        t.Log (resp.Error ())
+        t.Error ("wrong app.Handle view not found error message")
+    }
+}
+
+func TestAppHandleInvalidEngine (t *testing.T) {
+    ctx, cancel := getCtx ("/test/doctype.engine.invalid")
+    defer cancel()
+    a, err := New ()
+    if err != nil {
+        t.Fatal (err)
+    }
+    ctx = a.Handle (ctx)
+    if !appctx.Failed (ctx) {
+        t.Fatal ("app.Handle should fail")
+    }
+    resp := appctx.Response (ctx)
+    if resp.Error () != "invalid doctype engine: invalid.engine" {
+        t.Log (resp.Error ())
+        t.Error ("wrong app.Handle invalid doctype engine error message")
+    }
 }
