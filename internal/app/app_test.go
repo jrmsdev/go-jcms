@@ -11,10 +11,7 @@ import (
 )
 
 func init () {
-    os.Setenv ("JCMS_WEBAPP", "devel")
-    os.Setenv ("JCMS_BASEDIR",
-            filepath.Join (os.Getenv ("GOPATH"),
-                    "src", "github.com", "jrmsdev", "go-jcms", "apps"))
+    setEnv ("devel")
 }
 
 func TestFindView (t *testing.T) {
@@ -40,6 +37,23 @@ func TestViewNotFound (t *testing.T) {
     if err == nil {
         t.Fatal ("found view:", v.Name)
     }
+}
+
+func TestNewAppSettingsError (t *testing.T) {
+    setEnv ("invalidapp")
+    a, err := New ()
+    if err == nil {
+        t.Log (a, err)
+        t.Error ("settings file for invalidapp should fail")
+    }
+    setEnv ("devel") // restore env
+}
+
+func setEnv (appname string) {
+    os.Setenv ("JCMS_WEBAPP", appname)
+    os.Setenv ("JCMS_BASEDIR",
+            filepath.Join (os.Getenv ("GOPATH"),
+                    "src", "github.com", "jrmsdev", "go-jcms", "apps"))
 }
 
 //~ func getCtx (req *http.Request) (context.Context, context.CancelFunc) {
