@@ -2,6 +2,7 @@
 
 import os
 from os import path
+from tempfile import mkstemp
 from subprocess import check_output, check_call
 
 GOPATH = os.getenv ('GOPATH')
@@ -59,36 +60,58 @@ HTML_HEAD = '''
 	</head>
 	<body>
         <div id="content">
-            <pre class="file">
+            <table>
 '''
 
 HTML_TAIL = '''
-            </pre>
+            </table>
         </div>
     </body>
 </html>
 '''
 
-COVDONE = '''  <a class="cov10" href="{}">{}</a>'''
-COVMISS = '''  <span class="cov0">{}</span>'''
+COVDONE = '''
+<tr>
+    <td><a class="cov10" href="{}">{}</a></td>
+    <td><span class="cov10">{}</span></td>
+</tr>
+'''
+COVMISS = '''
+<tr>
+    <td><span class="cov0">{}</span>
+    <td><span class="cov0">[no test files]</span></td>
+</tr>
+'''
 
 def testcover (pkg):
     oldwd = os.getcwd ()
     os.chdir (path.join (GOPATH, 'src', pkg))
-    fh = open (os.devnull, 'w')
+    dnfh = open (os.devnull, 'w')
+    outfd, outfn = mkstemp (prefix = 'go-jcms.test.coverage')
     check_call ('go test -coverprofile coverage.out'.split (),
-            stderr = fh)
-    fh.close ()
+            stderr = dnfh, stdout = outfd)
+    dnfh.close ()
     if path.isfile ('coverage.out'):
         check_call ('go tool cover -html coverage.out -o coverage.html'.split ())
-        covdone (pkg)
+        covdone (pkg, outfn)
     else:
         covmiss (pkg)
+    fh = open (outfn, 'r')
+    print (fh.read (), end = '')
+    fh.close ()
+    os.unlink (outfn)
     os.chdir (oldwd)
 
-def covdone (pkg):
+def covdone (pkg, outfn):
     covhtml = path.join (GOPATH, 'src', pkg, 'coverage.html')
-    print (COVDONE.format (covhtml, pkg), file = INDEX_FH)
+    covinfo = ''
+    fh = open (outfn, 'r')
+    for line in [l.strip () for l in fh.readlines ()]:
+        if line.startswith ('coverage: ') and line.endswith (' of statements'):
+            covinfo = line
+            break
+    fh.close ()
+    print (COVDONE.format (covhtml, pkg, covinfo), file = INDEX_FH)
 
 def covmiss (pkg):
     print (COVMISS.format (pkg), file = INDEX_FH)
