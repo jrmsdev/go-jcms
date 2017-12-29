@@ -125,7 +125,7 @@ if __name__ == '__main__':
         for pkg in check_output(['go', 'list', './...']).decode().splitlines():
             testcover (pkg)
     else:
-        testcover (path.join ('github.com', 'jrmsdev', 'go-jcms', sys.argv[1]))
+        testcover (path.join ('github.com', 'jrmsdev', 'go-jcms', path.relpath (sys.argv[1])))
     print (HTML_TAIL, file = INDEX_FH)
     INDEX_FH.close ()
     sys.exit (0)
