@@ -4,7 +4,7 @@ import sys
 import os
 from os import path
 from tempfile import mkstemp
-from subprocess import check_output, check_call
+from subprocess import check_output, check_call, CalledProcessError
 
 GOPATH = os.getenv ('GOPATH')
 
@@ -87,11 +87,16 @@ COVMISS = '''
 def testcover (pkg):
     oldwd = os.getcwd ()
     os.chdir (path.join (GOPATH, 'src', pkg))
-    dnfh = open (os.devnull, 'w')
     outfd, outfn = mkstemp (prefix = 'go-jcms.test.coverage')
-    check_call ('go test -coverprofile coverage.out'.split (),
-            stderr = dnfh, stdout = outfd)
-    dnfh.close ()
+    try:
+        check_call ('go test -coverprofile coverage.out'.split (),
+                stderr = outfd, stdout = outfd)
+    except CalledProcessError:
+        fh = open (outfn, 'r')
+        print (fh.read (), end = '')
+        fh.close ()
+        os.unlink (outfn)
+        return
     if path.isfile ('coverage.out'):
         check_call ('go tool cover -html coverage.out -o coverage.html'.split ())
         covdone (pkg, outfn)
