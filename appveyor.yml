@@ -31,7 +31,7 @@ install:
   - gcc --version
 
 build_script:
-  - go build ./jcms
+  - go build ./lib/jcms
 
 test_script:
-  - go test ./internal/... ./jcms
+  - go test ./lib/internal/... ./lib/jcms

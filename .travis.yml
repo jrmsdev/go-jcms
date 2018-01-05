@@ -10,7 +10,7 @@ matrix:
       osx_image: xcode8.3
 
 install:
-  - go build ./jcms
+  - go build ./lib/jcms
 
 script:
-  - go test ./internal/... ./jcms
+  - go test ./lib/internal/... ./lib/jcms
