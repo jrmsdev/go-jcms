@@ -3,6 +3,7 @@
 import sys
 import os
 from os import path
+from time import asctime
 from tempfile import mkstemp
 from subprocess import check_output, check_call, CalledProcessError
 
@@ -67,6 +68,10 @@ HTML_HEAD = '''
 HTML_TAIL = '''
             </table>
         </div>
+        <br>
+        <footer>
+            <small>{}</small>
+        </footer>
     </body>
 </html>
 '''
@@ -147,6 +152,7 @@ if __name__ == '__main__':
             testcover (pkg)
     else:
         testcover (path.join ('github.com', 'jrmsdev', 'go-jcms', path.relpath (sys.argv[1])))
-    print (HTML_TAIL, file = INDEX_FH)
+    now = asctime ()
+    print (HTML_TAIL.format (now), file = INDEX_FH)
     INDEX_FH.close ()
     sys.exit (0)
