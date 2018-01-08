@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	setEnv("devel")
+	setEnv("testing")
 }
 
 func TestFindView(t *testing.T) {
@@ -59,7 +59,7 @@ func TestNewAppSettingsError(t *testing.T) {
 		t.Log(a, err)
 		t.Error("settings file for invalidapp should fail")
 	}
-	setEnv("devel") // restore env
+	setEnv("testing") // restore env
 }
 
 func setEnv(appname string) {

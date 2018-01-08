@@ -1,25 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <webapp>
-    <title>JCMS Devel</title>
-    <view
-        path="/"
-        name="home"
-        home="true"
-        doctype="text"
-    />
-    <view
-        path="/favicon.ico"
-        name="favicon"
-        doctype="static"
-    />
-    <view
-        path="/test"
-        name="testing"
-        doctype="text"
-    />
-    <view
-        path="/test/doctype.engine.invalid"
-        name="test.doctype.engine.invalid"
-        doctype="invalid.engine"
-    />
+	<title>JCMS Devel</title>
+	<view
+		path="/"
+		name="home"
+		home="true"
+		doctype="text"
+	/>
+	<view
+		path="/favicon.ico"
+		name="favicon"
+		doctype="static"
+	/>
 </webapp>
