@@ -38,7 +38,6 @@ func (e *engine) Handle(
 ) context.Context {
 	log.Println(e, "handle")
 	ctx := req.Context()
-	// TODO: handle static doctype
 	docroot := filepath.Join(env.WebappDir(), "docroot")
 	if !fsutils.DirExists(docroot) {
 		log.Println("E: docroot not found:", docroot)

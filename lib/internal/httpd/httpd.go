@@ -56,6 +56,10 @@ func Stop() {
 	}
 }
 
+func Handle(prefix string, handler http.Handler) {
+	servemux.Handle(prefix, handler)
+}
+
 func HandleFunc(prefix string, fn func(http.ResponseWriter, *http.Request)) {
 	servemux.HandleFunc(prefix, fn)
 }

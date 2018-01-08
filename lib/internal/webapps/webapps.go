@@ -3,9 +3,11 @@ package webapps
 import (
 	"log"
 	"net/http"
+	"path/filepath"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/app"
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
+	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 )
@@ -17,7 +19,16 @@ func Start() {
 		errHandler(err)
 		return
 	}
+	staticHandler(a)
 	mainHandler(a)
+}
+
+func staticHandler(a *app.App) {
+	log.Println("static handler:", a)
+	staticdir := filepath.Join(env.WebappDir(), "static")
+	httpd.Handle("/static/",
+		http.StripPrefix("/static/",
+			http.FileServer(http.Dir(staticdir))))
 }
 
 func mainHandler(a *app.App) {
