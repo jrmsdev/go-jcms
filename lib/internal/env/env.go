@@ -10,6 +10,7 @@ import (
 // ie: JCMS_WEBAPP - JCMS_BASEDIR
 var webapp = "default"
 var basedir = "/opt/jcms"
+var datadir = "/var/opt/jcms"
 
 func WebappName() string {
 	return getEnv("JCMS_WEBAPP", webapp)
@@ -17,6 +18,15 @@ func WebappName() string {
 
 func SettingsFile() string {
 	return absPath(fp.Join(webappDir(), "settings.xml"))
+}
+
+func DataDir() string {
+	d, ok := os.LookupEnv("JCMS_DATADIR")
+	d = absPath(d)
+	if ok && d != "." {
+		return fp.Join(d, WebappName())
+	}
+	return fp.FromSlash(datadir)
 }
 
 func getEnv(n, d string) string {
