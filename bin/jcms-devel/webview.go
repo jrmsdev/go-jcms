@@ -1,12 +1,11 @@
-// public cmd API
-package cli
+package main
 
 import (
     "log"
     "net/url"
+
     xwv "github.com/zserge/webview"
-    "github.com/jrmsdev/go-jcms/lib/internal/rt"
-    "github.com/jrmsdev/go-jcms/lib/internal/core"
+    "github.com/jrmsdev/go-jcms/lib/jcms"
 )
 
 const (
@@ -15,22 +14,17 @@ const (
     webviewHeight = 600
 )
 
-func Main () {
-    core.Listen ()
-    core.Serve ()
-}
-
 func Webview (req string) {
-    uri, err := url.Parse (core.Listen ())
+    uri, err := url.Parse (jcms.Listen ())
     if err != nil {
         log.Fatalln (err)
     }
     log.Println ("webview: req", req)
     go func() {
-        core.Serve ()
+        jcms.Serve ()
     }()
     uri.Path = req
     log.Println ("webview: open", uri.String ())
-    xwv.Open (rt.NAME, uri.String (), webviewWidth, webviewHeight, webviewResize)
-    core.Stop ()
+    xwv.Open ("jcms", uri.String (), webviewWidth, webviewHeight, webviewResize)
+    jcms.Stop ()
 }

@@ -1,9 +1,10 @@
 package main
 
 import (
-    "github.com/jrmsdev/go-jcms/lib/cli"
+    "github.com/jrmsdev/go-jcms/lib/jcms"
 )
 
 func main () {
-    cli.Main ()
+    jcms.Listen ()
+    jcms.Serve ()
 }

@@ -6,7 +6,6 @@ import (
     "flag"
     "path"
     "path/filepath"
-    "github.com/jrmsdev/go-jcms/lib/cli"
 )
 
 func main () {
@@ -32,5 +31,5 @@ func main () {
         uri = "/"
     }
     // launch webview
-    cli.Webview (uri)
+    Webview (uri)
 }
