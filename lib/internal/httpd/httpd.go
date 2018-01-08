@@ -1,16 +1,16 @@
 package httpd
 
 import (
-    "log"
-    "time"
-    "net"
-    "net/url"
-    "net/http"
-    "context"
+	"context"
+	"log"
+	"net"
+	"net/http"
+	"net/url"
+	"time"
 )
 
 var addr = "127.0.0.1:0"
-var servemux = http.NewServeMux ()
+var servemux = http.NewServeMux()
 var listener net.Listener
 
 var server = &http.Server{
@@ -21,41 +21,41 @@ var server = &http.Server{
 	MaxHeaderBytes: 1 << 20,
 }
 
-func Listen () *url.URL {
-    var err error
-    listener, err = net.Listen ("tcp4", addr)
-    if err != nil {
-        log.Fatalln (err)
-    }
-    url := &url.URL{}
-    url.Scheme = "http"
-    url.Host = listener.Addr ().String ()
-    url.Path = "/"
-    return url
+func Listen() *url.URL {
+	var err error
+	listener, err = net.Listen("tcp4", addr)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	url := &url.URL{}
+	url.Scheme = "http"
+	url.Host = listener.Addr().String()
+	url.Path = "/"
+	return url
 }
 
-func Serve () {
-    log.Println ("httpd: serve")
-    if listener == nil {
-        log.Fatalln ("nil listener... call httpd.Listen() first")
-    }
-    var err error
-    err = server.Serve (listener)
-    if err != nil {
-        log.Fatalln (err)
-    }
+func Serve() {
+	log.Println("httpd: serve")
+	if listener == nil {
+		log.Fatalln("nil listener... call httpd.Listen() first")
+	}
+	var err error
+	err = server.Serve(listener)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
-func Stop () {
-    log.Println ("httpd: stop")
-    ctx, cancel := context.WithTimeout (context.Background (), 10 * time.Second)
-    defer cancel ()
-    err := server.Shutdown (ctx)
-    if err != nil {
-        log.Println ("E: httpd shutdown:", err)
-    }
+func Stop() {
+	log.Println("httpd: stop")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err := server.Shutdown(ctx)
+	if err != nil {
+		log.Println("E: httpd shutdown:", err)
+	}
 }
 
-func HandleFunc (prefix string, fn func(http.ResponseWriter, *http.Request)) {
-    servemux.HandleFunc (prefix, fn)
+func HandleFunc(prefix string, fn func(http.ResponseWriter, *http.Request)) {
+	servemux.HandleFunc(prefix, fn)
 }

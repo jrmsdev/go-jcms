@@ -1,19 +1,19 @@
 package jcms
 
 import (
-    "testing"
-    "net/http"
+	"net/http"
+	"testing"
 )
 
-func TestServe (t *testing.T) {
-    uri := Listen ()
-    go func(){
-        Serve ()
-    }()
-    t.Log (uri)
-    resp, err := http.Get (uri)
-    if err != nil {
-        t.Fatal (err)
-    }
-    resp.Body.Close ()
+func TestServe(t *testing.T) {
+	uri := Listen()
+	go func() {
+		Serve()
+	}()
+	t.Log(uri)
+	resp, err := http.Get(uri)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
 }
