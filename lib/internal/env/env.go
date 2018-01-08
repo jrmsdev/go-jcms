@@ -16,8 +16,12 @@ func WebappName() string {
 	return getEnv("JCMS_WEBAPP", webapp)
 }
 
+func WebappDir() string {
+	return absPath(fp.Join(baseDir(), WebappName()))
+}
+
 func SettingsFile() string {
-	return absPath(fp.Join(webappDir(), "settings.xml"))
+	return absPath(fp.Join(WebappDir(), "settings.xml"))
 }
 
 func DataDir() string {
@@ -52,8 +56,4 @@ func baseDir() string {
 		return v
 	}
 	return fp.FromSlash(basedir)
-}
-
-func webappDir() string {
-	return absPath(fp.Join(baseDir(), WebappName()))
 }

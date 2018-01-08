@@ -37,6 +37,7 @@ func (r *Response) Status() int {
 func (r *Response) SetError(status int, msg string) {
 	r.status = status
 	r.errmsg = msg
+	// TODO: resp SetError should call r.buf.Reset() for cleanup?
 }
 
 func (r *Response) Error() string {
