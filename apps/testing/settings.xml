@@ -4,7 +4,6 @@
 	<view
 		path="/"
 		name="home"
-		home="true"
 		doctype="text"
 	/>
 	<view
