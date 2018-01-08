@@ -16,4 +16,28 @@
 		name="test.doctype.engine.invalid"
 		doctype="invalid.engine"
 	/>
+	<view
+		path="/test/redirect/permanent"
+		name="test.redirect.permanent"
+		redirect="permanent"
+		location="/test/redirect/location"
+	/>
+	<view
+		path="/test/redirect/temporary"
+		name="test.redirect.temporary"
+		redirect="temporary"
+		location="/test/redirect/location"
+	/>
+	<view
+		path="/test/redirect/invalidstatus"
+		name="test.redirect.invalidstatus"
+		redirect="invalid"
+		location=""
+	/>
+	<view
+		path="/test/redirect/nolocation"
+		name="test.redirect.nolocation"
+		redirect="permanent"
+		location=""
+	/>
 </webapp>

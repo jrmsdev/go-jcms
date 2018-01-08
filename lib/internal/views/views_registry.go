@@ -18,6 +18,7 @@ func Register(vlist []*View) *Registry {
 	for _, v := range vlist {
 		// clean view path, it comes from settings.xml file
 		v.Path = xpath.Clean(v.Path)
+		// TODO: check duplicate view names
 		r.db[v.Name] = v
 		r.idx[v.Path] = v.Name
 	}
