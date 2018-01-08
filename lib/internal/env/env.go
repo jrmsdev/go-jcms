@@ -6,9 +6,10 @@ import (
 	fp "path/filepath"
 )
 
-// OS env defaults - set as JCMS_<UPPERCASE_NAME> - ie: JCMS_WEBAPP
-// JCMS_BASEDIR env var is dinamically checked
+// OS env defaults - set as JCMS_<UPPERCASE_NAME>
+// ie: JCMS_WEBAPP - JCMS_BASEDIR
 var webapp = "default"
+var basedir = "/opt/jcms"
 
 func WebappName() string {
 	return getEnv("JCMS_WEBAPP", webapp)
@@ -40,7 +41,7 @@ func baseDir() string {
 	if ok && v != "." {
 		return v
 	}
-	return fp.FromSlash("/opt/jcms")
+	return fp.FromSlash(basedir)
 }
 
 func webappDir() string {
