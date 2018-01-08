@@ -3,9 +3,6 @@ package views
 import (
 	"encoding/xml"
 	"fmt"
-
-	// init doctype engines
-	_ "github.com/jrmsdev/go-jcms/lib/internal/doctype/base/loader"
 )
 
 type View struct {

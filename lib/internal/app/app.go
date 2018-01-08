@@ -12,6 +12,9 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
+
+	// init doctype engines
+	_ "github.com/jrmsdev/go-jcms/lib/internal/doctype/base/loader"
 )
 
 type App struct {
@@ -96,5 +99,5 @@ func doctypeEngine(
 		return ctx
 	}
 	log.Println("app: view engine", eng.String())
-	return eng.Handle(req, resp)
+	return eng.Handle(view, req, resp)
 }
