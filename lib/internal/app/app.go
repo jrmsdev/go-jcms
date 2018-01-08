@@ -9,8 +9,8 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
+	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
-	"github.com/jrmsdev/go-jcms/lib/internal/utils"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
 )
 
@@ -70,7 +70,7 @@ func (a *App) findView(path string) (*views.View, error) {
 func getSettings() (*Settings, error) {
 	fn := env.SettingsFile()
 	log.Println("app:", fn)
-	if !utils.FileExists(fn) {
+	if !fsutils.FileExists(fn) {
 		return nil, fmt.Errorf("file not found: %s", fn)
 	}
 	return readSettings(fn)
