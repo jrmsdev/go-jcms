@@ -1,24 +1,16 @@
 package app
 
 import (
-	"context"
 	"fmt"
-	"net/http"
-	"net/url"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
-	"github.com/jrmsdev/go-jcms/lib/internal/response"
 )
 
-func init() {
-	setEnv("testing")
-}
-
 func TestNewApp(t *testing.T) {
+	testappEnv("testing")
+	defer testappEnv("") // cleanup
 	a, err := New()
 	if err != nil {
 		t.Fatal(err)
@@ -29,89 +21,48 @@ func TestNewApp(t *testing.T) {
 }
 
 func TestNewAppSettingsError(t *testing.T) {
-	setEnv("invalidapp")
+	testappEnv("invalidapp")
+	defer testappEnv("") // cleanup
 	a, err := New()
 	if err == nil {
 		t.Log(a, err)
 		t.Error("settings file for invalidapp should fail")
 	}
-	setEnv("testing") // restore env
-}
-
-func setEnv(appname string) {
-	os.Setenv("JCMS_WEBAPP", appname)
-	os.Setenv("JCMS_BASEDIR",
-		filepath.Join(os.Getenv("GOPATH"),
-			"src", "github.com", "jrmsdev", "go-jcms", "webapps"))
-}
-
-func getReq(path string) *http.Request {
-	req := &http.Request{}
-	req.URL, _ = url.Parse("http://127.0.0.1:0" + path)
-	return req
-}
-
-func reqCtx(req *http.Request) (*http.Request, context.CancelFunc) {
-	return appctx.New(req)
 }
 
 func TestAppHandle(t *testing.T) {
-	req := getReq("/test")
-	req, cancel := reqCtx(req)
-	ctx := req.Context()
-	resp := response.New()
-	defer cancel()
-	a, err := New()
-	if err != nil {
-		t.Fatal(err)
-	}
-	ctx = a.Handle(req, resp)
-	if appctx.Failed(ctx) {
-		t.Log(resp.Error())
+	tapp := newTestApp()
+	r := tapp.Handle("/test")
+	if appctx.Failed(r.Ctx) {
+		t.Log(r.Resp.Error())
 		t.Error("app.Handle should not fail")
 	}
-	body := strings.TrimSpace(string(resp.Body()))
+	body := strings.TrimSpace(string(r.Resp.Body()))
 	if body != "testing" {
 		t.Error("invalid resp body:", body)
 	}
 }
 
 func TestAppHandleViewNotFound(t *testing.T) {
-	req := getReq("/test/view.not.found")
-	req, cancel := reqCtx(req)
-	ctx := req.Context()
-	resp := response.New()
-	defer cancel()
-	a, err := New()
-	if err != nil {
-		t.Fatal(err)
-	}
-	ctx = a.Handle(req, resp)
-	if !appctx.Failed(ctx) {
+	tapp := newTestApp()
+	r := tapp.Handle("/test/view.not.found")
+	if !appctx.Failed(r.Ctx) {
 		t.Fatal("app.Handle should fail")
 	}
-	if resp.Error() != "view: not found: /test/view.not.found" {
-		t.Log(resp.Error())
+	if r.Resp.Error() != "view: not found: /test/view.not.found" {
+		t.Log(r.Resp.Error())
 		t.Error("wrong app.Handle view not found error message")
 	}
 }
 
 func TestAppHandleInvalidEngine(t *testing.T) {
-	req := getReq("/test/doctype.engine.invalid")
-	req, cancel := reqCtx(req)
-	ctx := req.Context()
-	resp := response.New()
-	defer cancel()
-	a, err := New()
-	if err != nil {
-		t.Fatal(err)
-	}
-	ctx = a.Handle(req, resp)
-	if !appctx.Failed(ctx) {
+	tapp := newTestApp()
+	r := tapp.Handle("/test/doctype.engine.invalid")
+	if !appctx.Failed(r.Ctx) {
 		t.Fatal("app.Handle should fail")
 	}
-	if resp.Error() != "invalid doctype engine: invalid.engine" {
-		t.Log(resp.Error())
+	if r.Resp.Error() != "invalid doctype engine: invalid.engine" {
+		t.Log(r.Resp.Error())
 		t.Error("wrong app.Handle invalid doctype engine error message")
 	}
 }

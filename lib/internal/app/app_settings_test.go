@@ -49,6 +49,8 @@ func TestNewSettingsError(t *testing.T) {
 }
 
 func TestReadSettings(t *testing.T) {
+	testappEnv("testing")
+	defer testappEnv("") // cleanup
 	fn := env.SettingsFile()
 	t.Log(fn)
 	s, err := readSettings(fn)
