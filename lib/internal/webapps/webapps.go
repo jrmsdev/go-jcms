@@ -23,6 +23,7 @@ func Start() {
 func mainHandler(a *app.App) {
 	log.Println("main handler:", a)
 	httpd.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		// TODO: use http.Request.WithContext
 		resp := response.New()
 		ctx, cancel := appctx.New(req, resp)
 		defer cancel()
@@ -55,10 +56,19 @@ func respRedirect(w http.ResponseWriter, r *http.Request, resp *response.Respons
 	//~ http.Redirect (w, r, resp.Location (), resp.Status ())
 }
 
+func respHeaders(w http.ResponseWriter, resp *response.Response) {
+	for h, v := range resp.Headers() {
+		w.Header().Set(h, v)
+	}
+	w.WriteHeader(resp.Status())
+}
+
 func writeResp(w http.ResponseWriter, resp *response.Response) {
 	log.Println("write response")
-	_, err := w.Write(resp.Body())
+	respHeaders(w, resp)
+	sent, err := w.Write(resp.Body())
 	if err != nil {
 		log.Fatalln("PANIC: write response:", err.Error())
 	}
+	log.Println("response sent:", sent)
 }

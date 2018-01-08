@@ -7,19 +7,22 @@ import (
 )
 
 type Response struct {
-	buf    bytes.Buffer
-	body   io.Writer
-	size   int
-	status int
-	errmsg string
+	buf     bytes.Buffer
+	body    io.Writer
+	size    int
+	status  int
+	errmsg  string
+	headers map[string]string
 }
 
 func New() *Response {
-	r := &Response{}
+	r := &Response{
+		size:    0,
+		status:  http.StatusNotImplemented,
+		errmsg:  "NOERRMSG",
+		headers: make(map[string]string),
+	}
 	r.body = io.MultiWriter(&r.buf)
-	r.size = 0
-	r.status = http.StatusNotImplemented
-	r.errmsg = "NOERRMSG"
 	return r
 }
 
@@ -52,4 +55,12 @@ func (r *Response) Body() []byte {
 	b := r.buf.Bytes()
 	r.buf.Reset()
 	return b
+}
+
+func (r *Response) Headers() map[string]string {
+	return r.headers
+}
+
+func (r *Response) SetHeader(name, value string) {
+	r.headers[name] = value
 }
