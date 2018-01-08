@@ -16,7 +16,8 @@ func Register(vlist []*View) *Registry {
 	r.db = make(map[string]*View)
 	r.idx = make(map[string]string)
 	for _, v := range vlist {
-		v.Path = xpath.Clean(v.Path) // clean path, it comes from settings.xml
+		// clean view path, it comes from settings.xml file
+		v.Path = xpath.Clean(v.Path)
 		r.db[v.Name] = v
 		r.idx[v.Path] = v.Name
 	}
@@ -26,8 +27,22 @@ func Register(vlist []*View) *Registry {
 func (r *Registry) Get(path string) (*View, error) {
 	idx, found := r.idx[path]
 	if !found {
-		log.Println("view: not found", path)
-		return nil, fmt.Errorf("view: not found %s", path)
+		log.Println("view: not found:", path)
+		return nil, fmt.Errorf("view: not found: %s", path)
 	}
-	return r.db[idx], nil
+	v := r.db[idx]
+	if v.UseView != "" {
+		return r.useView(v.UseView)
+	}
+	return v, nil
+}
+
+func (r *Registry) useView(name string) (*View, error) {
+	log.Println("view: useview", name)
+	v, found := r.db[name]
+	if !found {
+		log.Println("view: useview not found:", name)
+		return nil, fmt.Errorf("view: useview not found: %s", name)
+	}
+	return v, nil
 }

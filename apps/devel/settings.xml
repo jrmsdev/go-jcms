@@ -4,6 +4,11 @@
 	<view
 		path="/"
 		name="home"
+		useview="realhome"
+	/>
+	<view
+		path="/home"
+		name="realhome"
 		doctype="text"
 	/>
 	<view

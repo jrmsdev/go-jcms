@@ -62,7 +62,6 @@ func respError(w http.ResponseWriter, resp *response.Response) {
 }
 
 func respRedirect(w http.ResponseWriter, r *http.Request, resp *response.Response) {
-	// TODO: redirect response
 	http.Redirect(w, r, resp.Location(), resp.Status())
 }
 
