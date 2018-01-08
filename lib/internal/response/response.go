@@ -44,12 +44,8 @@ func (r *Response) Error() string {
 	return r.errmsg
 }
 
-func (r *Response) Write(s string) error {
-	n, err := io.WriteString(r.body, s)
-	if err != nil {
-		r.size += n
-	}
-	return err
+func (r *Response) Write(blob []byte) (int, error) {
+	return r.body.Write(blob)
 }
 
 func (r *Response) Body() []byte {

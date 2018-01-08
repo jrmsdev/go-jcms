@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
@@ -91,7 +92,12 @@ func TestAppHandle(t *testing.T) {
 	}
 	ctx = a.Handle(req, resp)
 	if appctx.Failed(ctx) {
+		t.Log(resp.Error())
 		t.Error("app.Handle should not fail")
+	}
+	body := strings.TrimSpace(string(resp.Body()))
+	if body != "testing" {
+		t.Error("invalid resp body:", body)
 	}
 }
 
