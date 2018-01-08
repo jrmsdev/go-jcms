@@ -1,9 +1,14 @@
 package doctype
 
-import "context"
+import (
+	"context"
+	"net/http"
+
+	"github.com/jrmsdev/go-jcms/lib/internal/response"
+)
 
 type Engine interface {
 	Type() string
 	String() string
-	Handle(context.Context) context.Context
+	Handle(*http.Request, *response.Response) context.Context
 }

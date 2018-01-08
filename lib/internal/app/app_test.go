@@ -75,35 +75,40 @@ func getReq(path string) *http.Request {
 	return req
 }
 
-func getCtx(path string) (context.Context, context.CancelFunc) {
-	return appctx.New(getReq(path), response.New())
+func reqCtx(req *http.Request) (*http.Request, context.CancelFunc) {
+	return appctx.New(req)
 }
 
 func TestAppHandle(t *testing.T) {
-	ctx, cancel := getCtx("/test")
+	req := getReq("/test")
+	req, cancel := reqCtx(req)
+	ctx := req.Context()
+	resp := response.New()
 	defer cancel()
 	a, err := New()
 	if err != nil {
 		t.Fatal(err)
 	}
-	ctx = a.Handle(ctx)
+	ctx = a.Handle(req, resp)
 	if appctx.Failed(ctx) {
 		t.Error("app.Handle should not fail")
 	}
 }
 
 func TestAppHandleViewNotFound(t *testing.T) {
-	ctx, cancel := getCtx("/test/view.not.found")
+	req := getReq("/test/view.not.found")
+	req, cancel := reqCtx(req)
+	ctx := req.Context()
+	resp := response.New()
 	defer cancel()
 	a, err := New()
 	if err != nil {
 		t.Fatal(err)
 	}
-	ctx = a.Handle(ctx)
+	ctx = a.Handle(req, resp)
 	if !appctx.Failed(ctx) {
 		t.Fatal("app.Handle should fail")
 	}
-	resp := appctx.Response(ctx)
 	if resp.Error() != "view: not found /test/view.not.found" {
 		t.Log(resp.Error())
 		t.Error("wrong app.Handle view not found error message")
@@ -111,17 +116,19 @@ func TestAppHandleViewNotFound(t *testing.T) {
 }
 
 func TestAppHandleInvalidEngine(t *testing.T) {
-	ctx, cancel := getCtx("/test/doctype.engine.invalid")
+	req := getReq("/test/doctype.engine.invalid")
+	req, cancel := reqCtx(req)
+	ctx := req.Context()
+	resp := response.New()
 	defer cancel()
 	a, err := New()
 	if err != nil {
 		t.Fatal(err)
 	}
-	ctx = a.Handle(ctx)
+	ctx = a.Handle(req, resp)
 	if !appctx.Failed(ctx) {
 		t.Fatal("app.Handle should fail")
 	}
-	resp := appctx.Response(ctx)
 	if resp.Error() != "invalid doctype engine: invalid.engine" {
 		t.Log(resp.Error())
 		t.Error("wrong app.Handle invalid doctype engine error message")

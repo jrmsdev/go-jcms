@@ -25,9 +25,9 @@ func mainHandler(a *app.App) {
 	httpd.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		// TODO: use http.Request.WithContext
 		resp := response.New()
-		ctx, cancel := appctx.New(req, resp)
+		req, cancel := appctx.New(req)
 		defer cancel()
-		ctx = a.Handle(ctx)
+		ctx := a.Handle(req, resp)
 		if appctx.Failed(ctx) {
 			respError(w, resp)
 		} else if appctx.Redirect(ctx) {

@@ -11,6 +11,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/utils"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
+	"github.com/jrmsdev/go-jcms/lib/internal/response"
 )
 
 type App struct {
@@ -35,22 +36,22 @@ func (a *App) String() string {
 	return fmt.Sprintf("app.%s", a.name)
 }
 
-func (a *App) Handle(ctx context.Context) context.Context {
+func (a *App) Handle(
+	req *http.Request,
+	resp *response.Response,
+) context.Context {
 	var (
 		err  error
 		view *views.View
 		eng  doctype.Engine
 	)
-	resp := appctx.Response(ctx)
-	req := appctx.Request(ctx)
-
+	ctx := req.Context()
 	view, err = a.findView(req.URL.Path)
 	if err != nil {
 		resp.SetError(http.StatusNotFound, err.Error())
 		ctx = appctx.Fail(ctx)
 		return ctx
 	}
-
 	log.Println("app: view doctype", view.Doctype)
 	eng, err = doctype.GetEngine(view.Doctype)
 	if err != nil {
@@ -58,9 +59,8 @@ func (a *App) Handle(ctx context.Context) context.Context {
 		ctx = appctx.Fail(ctx)
 		return ctx
 	}
-
 	log.Println("app: view engine", eng.String())
-	return eng.Handle(ctx)
+	return eng.Handle(req, resp)
 }
 
 func (a *App) findView(path string) (*views.View, error) {
