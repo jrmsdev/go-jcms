@@ -42,7 +42,7 @@ func setEnv(appname string) {
 	os.Setenv("JCMS_WEBAPP", appname)
 	os.Setenv("JCMS_BASEDIR",
 		filepath.Join(os.Getenv("GOPATH"),
-			"src", "github.com", "jrmsdev", "go-jcms", "apps"))
+			"src", "github.com", "jrmsdev", "go-jcms", "webapps"))
 }
 
 func getReq(path string) *http.Request {

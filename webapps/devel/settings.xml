@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webapp>
+	<title>JCMS Devel</title>
+	<view
+		path="/"
+		name="home"
+		useview="realhome"
+	/>
+	<view
+		path="/home"
+		name="realhome"
+		doctype="text"
+	/>
+	<view
+		path="/favicon.ico"
+		location="/static/favicon.ico"
+		name="favicon"
+		redirect="permanent"
+	/>
+</webapp>

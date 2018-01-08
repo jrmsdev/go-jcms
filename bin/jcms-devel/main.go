@@ -20,7 +20,7 @@ func main() {
 		log.Fatalln("GOPATH is not set")
 	}
 	// TODO: support possible ':' separator in GOPATH
-	gp = filepath.Join(gp, "src", "github.com", "jrmsdev", "go-jcms", "apps")
+	gp = filepath.Join(gp, "src", "github.com", "jrmsdev", "go-jcms", "webapps")
 	if err := os.Setenv("JCMS_BASEDIR", gp); err != nil {
 		log.Fatalln(err)
 	}
