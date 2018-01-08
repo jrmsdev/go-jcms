@@ -1,1 +1,4 @@
+# git config --local filter.gofmt.smudge=gofmt
+# git config --local filter.gofmt.clean=gofmt
+# git config --local filter.gofmt.required=true
 *.go filter=gofmt
