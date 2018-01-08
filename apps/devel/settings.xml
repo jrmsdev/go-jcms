@@ -8,7 +8,8 @@
 	/>
 	<view
 		path="/favicon.ico"
+		location="/static/favicon.ico"
 		name="favicon"
-		doctype="static"
+		redirect="permanent"
 	/>
 </webapp>

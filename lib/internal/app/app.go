@@ -15,9 +15,8 @@ import (
 )
 
 type App struct {
-	name     string
-	settings *Settings
-	views    *views.Registry
+	name string
+	vreg *views.Registry
 }
 
 func New() (*App, error) {
@@ -27,9 +26,17 @@ func New() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	reg := views.Register(s.Views)
-	a := &App{name, s, reg}
+	a := &App{name, views.Register(s.Views)}
 	return a, nil
+}
+
+func getSettings() (*Settings, error) {
+	fn := env.SettingsFile()
+	log.Println("app:", fn)
+	if !fsutils.FileExists(fn) {
+		return nil, fmt.Errorf("file not found: %s", fn)
+	}
+	return readSettings(fn)
 }
 
 func (a *App) String() string {
@@ -40,20 +47,49 @@ func (a *App) Handle(
 	req *http.Request,
 	resp *response.Response,
 ) context.Context {
-	var (
-		err  error
-		view *views.View
-		eng  doctype.Engine
-	)
 	ctx := req.Context()
-	view, err = a.findView(req.URL.Path)
+	view, err := a.vreg.Get(req.URL.Path)
 	if err != nil {
 		resp.SetError(http.StatusNotFound, err.Error())
-		ctx = appctx.Fail(ctx)
-		return ctx
+		return appctx.Fail(ctx)
 	}
+	if view.Redirect != "" {
+		err := viewRedirect(view, resp)
+		if err != nil {
+			resp.SetError(http.StatusInternalServerError,
+				err.Error())
+			return appctx.Fail(ctx)
+		}
+		return appctx.SetRedirect(ctx)
+	}
+	return doctypeEngine(ctx, view, req, resp)
+}
+
+func viewRedirect(view *views.View, resp *response.Response) error {
+	var statusmap = map[string]int{
+		"permanent": http.StatusPermanentRedirect,
+		"temporary": http.StatusTemporaryRedirect,
+	}
+	status, ok := statusmap[view.Redirect]
+	if !ok {
+		return fmt.Errorf("invalid view (%s) redirect: %s",
+			view.String(), view.Redirect)
+	}
+	if view.Location == "" {
+		view.Location = "/NOLOCATION"
+	}
+	resp.Redirect(status, view.Location)
+	return nil
+}
+
+func doctypeEngine(
+	ctx context.Context,
+	view *views.View,
+	req *http.Request,
+	resp *response.Response,
+) context.Context {
 	log.Println("app: view doctype", view.Doctype)
-	eng, err = doctype.GetEngine(view.Doctype)
+	eng, err := doctype.GetEngine(view.Doctype)
 	if err != nil {
 		resp.SetError(http.StatusInternalServerError, err.Error())
 		ctx = appctx.Fail(ctx)
@@ -61,17 +97,4 @@ func (a *App) Handle(
 	}
 	log.Println("app: view engine", eng.String())
 	return eng.Handle(req, resp)
-}
-
-func (a *App) findView(path string) (*views.View, error) {
-	return a.views.Get(path)
-}
-
-func getSettings() (*Settings, error) {
-	fn := env.SettingsFile()
-	log.Println("app:", fn)
-	if !fsutils.FileExists(fn) {
-		return nil, fmt.Errorf("file not found: %s", fn)
-	}
-	return readSettings(fn)
 }

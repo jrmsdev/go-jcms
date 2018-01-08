@@ -34,7 +34,6 @@ func staticHandler(a *app.App) {
 func mainHandler(a *app.App) {
 	log.Println("main handler:", a)
 	httpd.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		// TODO: use http.Request.WithContext
 		resp := response.New()
 		req, cancel := appctx.New(req)
 		defer cancel()
@@ -64,7 +63,7 @@ func respError(w http.ResponseWriter, resp *response.Response) {
 
 func respRedirect(w http.ResponseWriter, r *http.Request, resp *response.Response) {
 	// TODO: redirect response
-	//~ http.Redirect (w, r, resp.Location (), resp.Status ())
+	http.Redirect(w, r, resp.Location(), resp.Status())
 }
 
 func respHeaders(w http.ResponseWriter, resp *response.Response) {
