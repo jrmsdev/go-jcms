@@ -53,13 +53,12 @@ func mainHandler(a *app.App) {
 func errHandler(err error) {
 	httpd.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.E("INTERNAL ERROR: %s", err)
-		http.Error(w, "INTERNAL ERROR: "+err.Error(),
+		http.Error(w, "INTERNAL ERROR: no settings file",
 			http.StatusInternalServerError)
 	})
 }
 
 func respError(w http.ResponseWriter, resp *response.Response) {
-	log.E(resp.Error())
 	http.Error(w, "ERROR: "+resp.Error(), resp.Status())
 }
 

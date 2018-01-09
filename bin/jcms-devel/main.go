@@ -12,7 +12,7 @@ import (
 var log = jcms.Logger("jcms-devel")
 
 func main() {
-	err := jcms.LogStart("debug", os.Stderr)
+	err := jcms.LogStart("verbose", os.Stderr)
 	if err != nil {
 		panic(err)
 	}

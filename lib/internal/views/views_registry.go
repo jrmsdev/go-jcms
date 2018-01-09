@@ -32,21 +32,21 @@ func (r *Registry) Get(path string) (*View, error) {
 	idx, found := r.idx[path]
 	if !found {
 		log.E("not found: %s", path)
-		return nil, fmt.Errorf("view: not found: %s", path)
+		return nil, fmt.Errorf("not found: %s", path)
 	}
 	v := r.db[idx]
 	if v.UseView != "" {
-		return r.useView(v.UseView)
+		return r.useView(path, v.UseView)
 	}
 	return v, nil
 }
 
-func (r *Registry) useView(name string) (*View, error) {
+func (r *Registry) useView(path, name string) (*View, error) {
 	log.D("useview: %s", name)
 	v, found := r.db[name]
 	if !found {
 		log.E("useview not found: %s", name)
-		return nil, fmt.Errorf("view: useview not found: %s", name)
+		return nil, fmt.Errorf("not found: %s", path)
 	}
 	return v, nil
 }

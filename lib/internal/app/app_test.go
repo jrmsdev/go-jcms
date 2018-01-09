@@ -50,10 +50,6 @@ func TestAppHandleViewNotFound(t *testing.T) {
 	if !appctx.Failed(r.Ctx) {
 		t.Fatal("app.Handle should fail")
 	}
-	if r.Resp.Error() != "view: not found: /test/view.not.found" {
-		t.Log(r.Resp.Error())
-		t.Error("wrong app.Handle view not found error message")
-	}
 }
 
 func TestAppHandleInvalidEngine(t *testing.T) {
