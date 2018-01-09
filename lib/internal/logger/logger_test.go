@@ -8,11 +8,10 @@ import (
 )
 
 func newTestLogger(t *testing.T) *Logger {
-	if curlevel != defaultLevel {
-		t.Fatal("curlevel is not set to the default:", curlevel)
-	}
+	Level(defaultLevel)
 	l := New("testing")
 	l.tstamp = false
+	l.exitOnPanic = false
 	tmpfile, err := ioutil.TempFile(os.TempDir(), "jcmstest.logger.")
 	if err != nil {
 		t.Fatal(err)
@@ -33,7 +32,7 @@ func testCleanup() {
 	if fn != "" {
 		os.Remove(fn)
 	}
-	curlevel = defaultLevel
+	Level(defaultLevel)
 }
 
 func testReadlog(t *testing.T) string {
@@ -95,6 +94,17 @@ func TestW(t *testing.T) {
 	l.W("message")
 	content := testReadlog(t)
 	if content != "[W] testing: message" {
+		t.Error("invalid log content:", content)
+	}
+}
+
+func TestPanic(t *testing.T) {
+	l := newTestLogger(t)
+	defer testCleanup()
+	Level(QUIET) // should log even in quiet mode
+	l.Panic("message")
+	content := testReadlog(t)
+	if content != "[PANIC] testing: message" {
 		t.Error("invalid log content:", content)
 	}
 }

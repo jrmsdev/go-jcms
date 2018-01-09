@@ -15,6 +15,7 @@ const (
 	WARNING
 	ERROR
 	QUIET
+	PANIC // this must be the last (higher) one
 )
 
 const defaultLevel = WARNING
@@ -26,6 +27,7 @@ var curlevel = defaultLevel
 type Logger struct {
 	tag    string
 	tstamp bool
+	exitOnPanic bool
 }
 
 func New(tag string) *Logger {
@@ -36,7 +38,7 @@ func New(tag string) *Logger {
 			log.Fatalln("E: logger: new outfh:", err)
 		}
 	}
-	return &Logger{tag, true}
+	return &Logger{tag, true, true}
 }
 
 func File(fh *os.File) error {
@@ -117,4 +119,11 @@ func (l *Logger) V(fmtstr string, args ...interface{}) {
 
 func (l *Logger) W(fmtstr string, args ...interface{}) {
 	l.log(l.logEntry(WARNING, "W"), fmtstr, args...)
+}
+
+func (l *Logger) Panic(fmtstr string, args ...interface{}) {
+	l.log(l.logEntry(PANIC, "PANIC"), fmtstr, args...)
+	if l.exitOnPanic {
+		os.Exit(9)
+	}
 }
