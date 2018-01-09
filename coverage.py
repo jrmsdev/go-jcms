@@ -76,18 +76,13 @@ HTML_TAIL = '''
 </html>
 '''
 
-COVDONE = '''
-<tr>
-    <td><a class="cov10" href="{}">{}</a></td>
-    <td><span class="cov10">{}</span></td>
-</tr>
-'''
 COVMISS = '''
 <tr>
-    <td><span class="cov0">{}</span>
-    <td><span class="cov0">[no test files]</span></td>
+    <td>{}</td>
+    <td>[no test files]</td>
 </tr>
 '''
+
 COVERR = '''
 <tr>
     <td><span class="cov0">{}</span>
@@ -126,8 +121,15 @@ def testcover (pkg):
     os.unlink (errfn)
     os.chdir (oldwd)
 
+COVDONE = '''
+<tr>
+    <td><a class="cov{covlevel}" href="{href}">{pkg}</a></td>
+    <td><span class="cov{covlevel}">{covinfo}</span></td>
+</tr>
+'''
+
 def covdone (pkg, outfn):
-    covhtml = path.join (GOPATH, 'src', pkg, 'coverage.html')
+    href = path.join (GOPATH, 'src', pkg, 'coverage.html')
     covinfo = ''
     fh = open (outfn, 'r')
     for line in [l.strip () for l in fh.readlines ()]:
@@ -135,7 +137,14 @@ def covdone (pkg, outfn):
             covinfo = line
             break
     fh.close ()
-    print (COVDONE.format (covhtml, pkg, covinfo), file = INDEX_FH)
+    covp = int(covinfo.strip().split()[1].split('.')[0])
+    covlevel = int(covp / 10)
+    print (COVDONE.format (
+	    href = href,
+	    pkg = pkg,
+	    covinfo = covinfo,
+	    covlevel = covlevel,
+    ), file = INDEX_FH)
 
 def covmiss (pkg):
     print (COVMISS.format (pkg), file = INDEX_FH)
