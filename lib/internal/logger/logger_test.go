@@ -228,3 +228,59 @@ func checkEmpty(t *testing.T, id string) {
 		t.Fatal(id, err)
 	}
 }
+
+func TestSetLevel(t *testing.T) {
+	err := SetLevel("debug")
+	if err != nil {
+		t.Error(err)
+	}
+	err = SetLevel("error")
+	if err != nil {
+		t.Error(err)
+	}
+	err = SetLevel("quiet")
+	if err != nil {
+		t.Error(err)
+	}
+	err = SetLevel("verbose")
+	if err != nil {
+		t.Error(err)
+	}
+	err = SetLevel("warning")
+	if err != nil {
+		t.Error(err)
+	}
+	err = SetLevel("print")
+	if err == nil {
+		t.Error("set level did not fail: print")
+	}
+	err = SetLevel("panic")
+	if err == nil {
+		t.Error("set level did not fail: panic")
+	}
+	err = SetLevel("")
+	if err == nil {
+		t.Error("set empty level did not fail")
+	}
+}
+
+func TestPrint(t *testing.T) {
+	l := newTestLogger(t)
+	defer testCleanup()
+	l.Print("message")
+	content := testReadlog(t)
+	if content != "testing: message" {
+		t.Error("invalid log content:", content)
+	}
+}
+
+func TestPrintQuiet(t *testing.T) {
+	l := newTestLogger(t)
+	defer testCleanup()
+	Level(QUIET) // should not log in quiet mode
+	l.Print("message")
+	content := testReadlog(t)
+	if content != "" {
+		t.Error("invalid log content:", content)
+	}
+}
