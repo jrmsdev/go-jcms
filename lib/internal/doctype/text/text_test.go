@@ -58,6 +58,10 @@ func testHandle(t *testing.T, e doctype.Engine) {
 	if appctx.Failed(ctx) {
 		t.Error("handle context should not fail:", resp.Error())
 	}
+	status := resp.Status()
+	if status != http.StatusOK {
+		t.Error("invalid resp status:", status)
+	}
 	body := strings.TrimSpace(string(resp.Body()))
 	if body != "testing" {
 		t.Error("invalid resp body:", body)

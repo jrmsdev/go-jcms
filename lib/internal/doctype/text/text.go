@@ -58,6 +58,7 @@ func (e *engine) Handle(
 		log.Println("E:", err)
 		return appctx.Fail(ctx)
 	}
+	resp.SetStatus(http.StatusOK)
 	return ctx
 }
 
