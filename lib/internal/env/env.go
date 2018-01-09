@@ -31,9 +31,9 @@ func DataDir() string {
 	d, ok := os.LookupEnv("JCMS_DATADIR")
 	d = absPath(d)
 	if ok && d != "." {
-		return fp.Join(d, WebappName())
+		return absPath(fp.Join(d, WebappName()))
 	}
-	return fp.FromSlash(datadir + "/" + WebappName())
+	return absPath(fp.FromSlash(datadir + "/" + WebappName()))
 }
 
 func getEnv(n, d string) string {
@@ -58,5 +58,5 @@ func baseDir() string {
 	if ok && v != "." {
 		return v
 	}
-	return fp.FromSlash(basedir)
+	return absPath(fp.FromSlash(basedir))
 }
