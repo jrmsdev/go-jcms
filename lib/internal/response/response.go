@@ -22,7 +22,7 @@ func New() *Response {
 		status:   http.StatusNotImplemented,
 		errmsg:   "NOERRMSG",
 		headers:  make(map[string]string),
-		location: "NOREDIR",
+		location: "NOLOCATION",
 	}
 	r.body = io.MultiWriter(&r.buf)
 	return r
