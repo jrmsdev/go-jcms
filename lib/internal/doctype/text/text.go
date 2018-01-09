@@ -80,6 +80,7 @@ func sendFile(resp *response.Response, filename string) error {
 	if err != nil {
 		return err
 	}
+	defer fh.Close()
 	_, err = io.CopyN(resp, fh, maxSize)
 	if err != nil && err != io.EOF {
 		return err
