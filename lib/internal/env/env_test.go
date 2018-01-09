@@ -14,25 +14,28 @@ func TestWebappName(t *testing.T) {
 }
 
 func TestWebappDir(t *testing.T) {
-	okd := filepath.FromSlash("/opt/jcms/default")
+	okd := absPath(filepath.FromSlash("/opt/jcms/default"))
 	d := WebappDir()
 	if d != okd {
+		t.Log("expected:", okd)
 		t.Error("invalid webapp dir:", d)
 	}
 }
 
 func TestSettingsFile(t *testing.T) {
-	okfn := filepath.FromSlash("/opt/jcms/default/settings.xml")
+	okfn := absPath(filepath.FromSlash("/opt/jcms/default/settings.xml"))
 	fn := SettingsFile()
 	if fn != okfn {
+		t.Log("expected:", fn)
 		t.Error("invalid webapp settings file:", fn)
 	}
 }
 
 func TestDataDir(t *testing.T) {
-	okd := filepath.FromSlash("/var/opt/jcms/default")
+	okd := absPath(filepath.FromSlash("/var/opt/jcms/default"))
 	d := DataDir()
 	if d != okd {
+		t.Log("expected:", okd)
 		t.Error("invalid webapp data dir:", d)
 	}
 }
@@ -48,21 +51,23 @@ func TestGetEnv(t *testing.T) {
 }
 
 func TestEnvBasedir(t *testing.T) {
-	basedir := filepath.FromSlash("/jcms/testing")
+	basedir := absPath(filepath.FromSlash("/jcms/testing"))
 	os.Setenv("JCMS_BASEDIR", basedir)
 	defer os.Setenv("JCMS_BASEDIR", "")
 	d := baseDir()
 	if d != basedir {
+		t.Log("expected:", basedir)
 		t.Error("invalid env basedir:", d)
 	}
 }
 
 func TestEnvDatadir(t *testing.T) {
-	datadir := filepath.FromSlash("/jcms/testing")
+	datadir := absPath(filepath.FromSlash("/jcms/testing"))
 	os.Setenv("JCMS_DATADIR", datadir)
 	defer os.Setenv("JCMS_DATADIR", "")
 	d := DataDir()
 	if d != datadir {
+		t.Log("expected:", datadir)
 		t.Error("invalid env datadir:", d)
 	}
 }
