@@ -12,11 +12,11 @@ import (
 var log = jcms.Logger("jcms-devel")
 
 func main() {
-	err := jcms.LogFile(os.Stderr)
+	err := jcms.LogStart("debug", os.Stderr)
 	if err != nil {
 		panic(err)
 	}
-	defer jcms.LogClose()
+	defer jcms.LogStop()
 	// use devel webapp
 	if err = os.Setenv("JCMS_WEBAPP", "devel"); err != nil {
 		log.Panic(err.Error())

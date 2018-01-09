@@ -47,11 +47,14 @@ func Logger(tag string) *logger.Logger {
 	return logger.New(tag)
 }
 
-func LogFile(fh *os.File) error {
+func LogStart(level string, fh *os.File) error {
+	if err := logger.SetLevel(level); err != nil {
+		return err
+	}
 	return logger.File(fh)
 }
 
-func LogClose() {
+func LogStop() {
 	err := logger.Close()
 	if err != nil {
 		panic(err)

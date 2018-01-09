@@ -69,6 +69,22 @@ func Level(lvl LogLevel) {
 	curlevel = lvl
 }
 
+func SetLevel(lvl string) error {
+	var lvlmap = map[string]LogLevel{
+		"debug": DEBUG,
+		"error": ERROR,
+		"quiet": QUIET,
+		"verbose": VERBOSE,
+		"warning": WARNING,
+	}
+	l, ok := lvlmap[lvl]
+	if !ok {
+		return fmt.Errorf("invalid log level: %s", lvl)
+	}
+	Level(l)
+	return nil
+}
+
 type logEntry struct {
 	lvl    LogLevel
 	tag    string

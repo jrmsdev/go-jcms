@@ -7,11 +7,11 @@ import (
 )
 
 func main() {
-	err := jcms.LogFile(os.Stderr)
+	err := jcms.LogStart("error", os.Stderr)
 	if err != nil {
 		panic(err)
 	}
-	defer jcms.LogClose()
+	defer jcms.LogStop()
 	jcms.Listen()
 	jcms.Serve()
 }
