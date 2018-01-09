@@ -25,17 +25,21 @@ var outfh *os.File
 var curlevel = defaultLevel
 
 type Logger struct {
-	tag    string
-	tstamp bool
+	tag         string
+	tstamp      bool
 	exitOnPanic bool
 }
 
 func New(tag string) *Logger {
 	var err error
 	if outfh == nil {
-		outfh, err = os.Open(os.DevNull)
+		outfh, err = os.OpenFile(
+			os.DevNull,
+			os.O_WRONLY,
+			os.ModePerm,
+		)
 		if err != nil {
-			log.Fatalln("E: logger: new outfh:", err)
+			log.Fatalln("[PANIC] logger: new outfh:", err)
 		}
 	}
 	return &Logger{tag, true, true}
@@ -101,7 +105,7 @@ func (l *Logger) log(e *logEntry, fmtstr string, args ...interface{}) {
 	s := fmt.Sprintf("%s: %s\n", e.String(), fmt.Sprintf(fmtstr, args...))
 	_, err := outfh.WriteString(s)
 	if err != nil {
-		log.Fatalln("E: logger write:", err)
+		log.Fatalln("[PANIC] logger write:", err)
 	}
 }
 
