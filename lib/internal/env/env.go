@@ -30,7 +30,7 @@ func DataDir() string {
 	if ok && d != "." {
 		return fp.Join(d, WebappName())
 	}
-	return fp.FromSlash(datadir)
+	return fp.FromSlash(datadir + "/" + WebappName())
 }
 
 func getEnv(n, d string) string {
