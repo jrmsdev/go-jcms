@@ -35,15 +35,17 @@ func staticHandler(a *app.App) {
 
 func mainHandler(a *app.App) {
 	log.D("main handler: %s", a)
-	httpd.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		resp := response.New()
-		req, cancel := appctx.New(req)
+	httpd.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := appctx.New()
 		defer cancel()
-		ctx := a.Handle(req, resp)
+		req := r.WithContext(ctx)
+		resp := response.New()
+		// app handle
+		ctx = a.Handle(ctx, resp, req)
 		if appctx.Failed(ctx) {
 			respError(w, resp)
 		} else if appctx.Redirect(ctx) {
-			respRedirect(w, req, resp)
+			respRedirect(w, resp, req)
 		} else {
 			writeResp(w, resp)
 		}
@@ -62,11 +64,16 @@ func respError(w http.ResponseWriter, resp *response.Response) {
 	http.Error(w, "ERROR: "+resp.Error(), resp.Status())
 }
 
-func respRedirect(w http.ResponseWriter, r *http.Request, resp *response.Response) {
-	http.Redirect(w, r, resp.Location(), resp.Status())
+func respRedirect(
+	w http.ResponseWriter,
+	resp *response.Response,
+	req *http.Request,
+) {
+	http.Redirect(w, req, resp.Location(), resp.Status())
 }
 
 func respHeaders(w http.ResponseWriter, resp *response.Response) {
+	log.D("set response headers")
 	for h, v := range resp.Headers() {
 		w.Header().Set(h, v)
 	}
@@ -74,8 +81,8 @@ func respHeaders(w http.ResponseWriter, resp *response.Response) {
 }
 
 func writeResp(w http.ResponseWriter, resp *response.Response) {
-	log.D("write response")
 	respHeaders(w, resp)
+	log.D("write response")
 	sent, err := w.Write(resp.Body())
 	if err != nil {
 		log.Panic("write response: %s", err)

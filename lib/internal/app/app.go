@@ -10,11 +10,15 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
+	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
 
 	// init doctype engines
 	_ "github.com/jrmsdev/go-jcms/lib/internal/doctype/base/loader"
+
+	// init middleware packages
+	_ "github.com/jrmsdev/go-jcms/lib/internal/middleware/base/loader"
 )
 
 var log = logger.New("app")
@@ -32,6 +36,10 @@ func New() (*App, error) {
 		return nil, err
 	}
 	a := &App{name, views.Register(s.Views)}
+	// middleware enable
+	if err := middleware.Enable(s.Middleware); err != nil {
+		return nil, err
+	}
 	return a, nil
 }
 
@@ -49,57 +57,66 @@ func (a *App) String() string {
 }
 
 func (a *App) Handle(
-	req *http.Request,
+	ctx context.Context,
 	resp *response.Response,
+	req *http.Request,
 ) context.Context {
-	ctx := req.Context()
+	// view handler
 	view, err := a.vreg.Get(req.URL.Path)
 	if err != nil {
-		resp.SetError(http.StatusNotFound, err.Error())
-		return appctx.Fail(ctx)
+		return resp.SetError(ctx, http.StatusNotFound, err.Error())
 	}
+	// view redirect
 	if view.Redirect != "" {
-		err := viewRedirect(view, resp)
-		if err != nil {
-			resp.SetError(http.StatusInternalServerError,
-				err.Error())
-			return appctx.Fail(ctx)
-		}
-		return appctx.SetRedirect(ctx)
+		return respRedirect(ctx, resp, view)
 	}
-	return doctypeEngine(ctx, view, req, resp)
+	// middleware PRE
+	ctx = middleware.Action(ctx, resp, middleware.ACTION_PRE, req)
+	if appctx.Failed(ctx) {
+		return ctx
+	}
+	// doctype engine
+	ctx = doctypeEngine(ctx, resp, view, req)
+	if appctx.Failed(ctx) {
+		return ctx
+	}
+	// middleware POST
+	return middleware.Action(ctx, resp, middleware.ACTION_POST, req)
 }
 
-func viewRedirect(view *views.View, resp *response.Response) error {
+func respRedirect(
+	ctx context.Context,
+	resp *response.Response,
+	view *views.View,
+) context.Context {
 	var statusmap = map[string]int{
 		"permanent": http.StatusPermanentRedirect,
 		"temporary": http.StatusTemporaryRedirect,
 	}
 	status, ok := statusmap[view.Redirect]
 	if !ok {
-		return fmt.Errorf("invalid view (%s) redirect: %s",
-			view.String(), view.Redirect)
+		return resp.SetError(ctx, http.StatusInternalServerError,
+			fmt.Sprintf("invalid view (%s) redirect: %s",
+				view.String(), view.Redirect))
 	}
 	if view.Location == "" {
 		view.Location = "/NOLOCATION"
 	}
-	resp.Redirect(status, view.Location)
-	return nil
+	return resp.Redirect(ctx, status, view.Location)
 }
 
 func doctypeEngine(
 	ctx context.Context,
+	resp *response.Response,
 	view *views.View,
 	req *http.Request,
-	resp *response.Response,
 ) context.Context {
 	log.D("view doctype", view.Doctype)
 	eng, err := doctype.GetEngine(view.Doctype)
 	if err != nil {
-		resp.SetError(http.StatusInternalServerError, err.Error())
-		ctx = appctx.Fail(ctx)
-		return ctx
+		return resp.SetError(ctx,
+			http.StatusInternalServerError, err.Error())
 	}
-	log.D("view engine", eng.String())
-	return eng.Handle(view, req, resp)
+	log.D("view engine: %s", eng.String())
+	return eng.Handle(ctx, resp, view, req)
 }

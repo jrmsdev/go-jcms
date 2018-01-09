@@ -2,20 +2,17 @@ package appctx
 
 import (
 	"context"
-	"net/http"
 )
 
-type key int
+type appkey int
 
 const (
-	ctxFail key = iota
+	ctxFail appkey = iota
 	ctxRedirect
 )
 
-func New(req *http.Request) (*http.Request, context.CancelFunc) {
-	ctx, cancel := context.WithCancel(context.Background())
-	req = req.WithContext(ctx)
-	return req, cancel
+func New() (context.Context, context.CancelFunc) {
+	return context.WithCancel(context.Background())
 }
 
 func Fail(ctx context.Context) context.Context {
@@ -34,7 +31,7 @@ func Redirect(ctx context.Context) bool {
 	return getBool(ctx, ctxRedirect)
 }
 
-func getBool(ctx context.Context, k key) bool {
+func getBool(ctx context.Context, k appkey) bool {
 	v, ok := ctx.Value(k).(bool)
 	if !ok {
 		return false

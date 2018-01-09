@@ -4,12 +4,14 @@ import (
 	"encoding/xml"
 	"io/ioutil"
 
+	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
 )
 
 type Settings struct {
-	XMLName xml.Name      `xml:"webapp"`
-	Views   []*views.View `xml:"view"`
+	XMLName    xml.Name               `xml:"webapp"`
+	Views      []*views.View          `xml:"view"`
+	Middleware []*middleware.Settings `xml:"middleware"`
 }
 
 func newSettings(blob []byte) (*Settings, error) {

@@ -2,8 +2,11 @@ package response
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"net/http"
+
+	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 )
 
 type Response struct {
@@ -36,10 +39,15 @@ func (r *Response) Status() int {
 	return r.status
 }
 
-func (r *Response) SetError(status int, msg string) {
+func (r *Response) SetError(
+	ctx context.Context,
+	status int,
+	msg string,
+) context.Context {
 	r.status = status
 	r.errmsg = msg
 	// TODO: resp SetError should call r.buf.Reset() for cleanup?
+	return appctx.Fail(ctx)
 }
 
 func (r *Response) Error() string {
@@ -68,7 +76,12 @@ func (r *Response) Location() string {
 	return r.location
 }
 
-func (r *Response) Redirect(status int, location string) {
+func (r *Response) Redirect(
+	ctx context.Context,
+	status int,
+	location string,
+) context.Context {
 	r.status = status
 	r.location = location
+	return appctx.SetRedirect(ctx)
 }

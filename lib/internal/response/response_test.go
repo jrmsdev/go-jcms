@@ -1,6 +1,7 @@
 package response
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
@@ -33,12 +34,13 @@ func TestStatus(t *testing.T) {
 }
 
 func TestError(t *testing.T) {
+	ctx := context.TODO()
 	r := New()
 	errmsg := r.Error()
 	if errmsg != "NOERRMSG" {
 		t.Error("invalid default error message:", errmsg)
 	}
-	r.SetError(999, "error message")
+	r.SetError(ctx, 999, "error message")
 	status := r.Status()
 	if status != 999 {
 		t.Error("set error status failed:", status)
