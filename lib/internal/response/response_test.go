@@ -52,12 +52,13 @@ func TestError(t *testing.T) {
 }
 
 func TestRedirect(t *testing.T) {
+	ctx := context.TODO()
 	r := New()
 	location := r.Location()
 	if location != "NOLOCATION" {
 		t.Error("invalid default location:", location)
 	}
-	r.Redirect(999, "/redirect/location")
+	r.Redirect(ctx, 999, "/redirect/location")
 	status := r.Status()
 	if status != 999 {
 		t.Error("set redirect status failed:", status)

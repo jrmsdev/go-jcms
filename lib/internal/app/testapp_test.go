@@ -39,14 +39,11 @@ func testappEnv(appname string) {
 			"src", "github.com", "jrmsdev", "go-jcms", "webapps"))
 }
 
-func (a *testapp) getReq(path string) *http.Request {
-	req := &http.Request{}
+func (a *testapp) getReq(ctx context.Context, path string) *http.Request {
+	r := &http.Request{}
+	req := r.WithContext(ctx)
 	req.URL, _ = url.Parse("http://127.0.0.1:0" + path)
 	return req
-}
-
-func (a *testapp) reqCtx(req *http.Request) (*http.Request, context.CancelFunc) {
-	return appctx.New(req)
 }
 
 func (a *testapp) Handle(path string) *testappResult {
@@ -55,16 +52,15 @@ func (a *testapp) Handle(path string) *testappResult {
 		cancel context.CancelFunc
 	)
 	r := &testappResult{}
-	r.Req = a.getReq(path)
-	r.Req, cancel = a.reqCtx(r.Req)
-	r.Ctx = r.Req.Context()
-	r.Resp = response.New()
+	r.Ctx, cancel = appctx.New()
 	defer cancel()
+	r.Req = a.getReq(r.Ctx, path)
+	r.Resp = response.New()
 	r.App, err = New()
 	if err != nil {
 		r.Err = err
 		return r
 	}
-	r.Ctx = r.App.Handle(r.Req, r.Resp)
+	r.Ctx = r.App.Handle(r.Ctx, r.Resp, r.Req)
 	return r
 }

@@ -19,11 +19,12 @@ func newTestEngine() *testEngine {
 }
 
 func (e *testEngine) Handle(
-	_ *views.View,
-	req *http.Request,
+	ctx context.Context,
 	_ *response.Response,
+	_ *views.View,
+	_ *http.Request,
 ) context.Context {
-	return req.Context()
+	return ctx
 }
 
 func TestRegister(t *testing.T) {

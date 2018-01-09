@@ -1,6 +1,7 @@
 package text
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"os"
@@ -24,6 +25,13 @@ func testappEnv(appname string) {
 	os.Setenv("JCMS_BASEDIR",
 		filepath.Join(os.Getenv("GOPATH"),
 			"src", "github.com", "jrmsdev", "go-jcms", "webapps"))
+}
+
+func getReq(ctx context.Context, path string) *http.Request {
+	r := &http.Request{}
+	req := r.WithContext(ctx)
+	req.URL, _ = url.Parse("http://127.0.0.1:0" + path)
+	return req
 }
 
 func TestEngine(t *testing.T) {
@@ -51,10 +59,11 @@ func testHandle(t *testing.T, e doctype.Engine) {
 		Path:    "/pathto/testview",
 		Doctype: "text",
 	}
-	req := &http.Request{}
-	req.URL, _ = url.Parse("http://127.0.0.1:0/test")
+	ctx, cancel := appctx.New()
+	defer cancel()
+	req := getReq(ctx, "/test")
 	resp := response.New()
-	ctx := e.Handle(view, req, resp)
+	ctx = e.Handle(ctx, resp, view, req)
 	if appctx.Failed(ctx) {
 		t.Error("handle context should not fail:", resp.Error())
 	}
@@ -74,9 +83,11 @@ func testHandleDocrootError(t *testing.T, e doctype.Engine) {
 		Path:    "/pathto/testview",
 		Doctype: "text",
 	}
-	req := &http.Request{}
+	ctx, cancel := appctx.New()
+	defer cancel()
+	req := getReq(ctx, "/")
 	resp := response.New()
-	ctx := e.Handle(view, req, resp)
+	ctx = e.Handle(ctx, resp, view, req)
 	if !appctx.Failed(ctx) {
 		t.Error("handle context has not failed")
 	}
@@ -94,10 +105,11 @@ func testHandleNotFound(t *testing.T, e doctype.Engine) {
 		Path:    "/pathto/testview",
 		Doctype: "text",
 	}
-	req := &http.Request{}
-	req.URL, _ = url.Parse("http://127.0.0.1:0/invaliduri")
+	ctx, cancel := appctx.New()
+	defer cancel()
+	req := getReq(ctx, "/invaliduri")
 	resp := response.New()
-	ctx := e.Handle(view, req, resp)
+	ctx = e.Handle(ctx, resp, view, req)
 	if !appctx.Failed(ctx) {
 		t.Error("handle context should fail")
 	}

@@ -2,16 +2,12 @@ package appctx
 
 import (
 	"context"
-	"net/http"
 	"testing"
 )
 
 func TestCtx(t *testing.T) {
-	var cancel context.CancelFunc
-	req := &http.Request{}
-	req, cancel = New(req)
+	ctx, cancel := New()
 	defer cancel()
-	ctx := req.Context()
 	testFailed(t, ctx)
 	testRedirect(t, ctx)
 }
