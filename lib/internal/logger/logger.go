@@ -13,6 +13,7 @@ const (
 	VERBOSE
 	WARNING
 	ERROR
+	PRINT
 	QUIET
 	PANIC // this must be the last (higher) one
 )
@@ -71,9 +72,9 @@ func Level(lvl LogLevel) {
 
 func SetLevel(lvl string) error {
 	var lvlmap = map[string]LogLevel{
-		"debug": DEBUG,
-		"error": ERROR,
-		"quiet": QUIET,
+		"debug":   DEBUG,
+		"error":   ERROR,
+		"quiet":   QUIET,
 		"verbose": VERBOSE,
 		"warning": WARNING,
 	}
@@ -138,6 +139,10 @@ func (l *Logger) V(fmtstr string, args ...interface{}) {
 
 func (l *Logger) W(fmtstr string, args ...interface{}) {
 	l.log(l.logEntry(WARNING, "W"), fmtstr, args...)
+}
+
+func (l *Logger) Print(fmtstr string, args ...interface{}) {
+	l.log(l.logEntry(PRINT, ""), fmtstr, args...)
 }
 
 func (l *Logger) Panic(fmtstr string, args ...interface{}) {
