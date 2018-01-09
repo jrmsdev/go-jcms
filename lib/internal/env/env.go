@@ -1,10 +1,13 @@
 package env
 
 import (
-	"log"
 	"os"
 	fp "path/filepath"
+
+	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 )
+
+var log = logger.New("env")
 
 // OS env defaults - set as JCMS_<UPPERCASE_NAME>
 // ie: JCMS_WEBAPP - JCMS_BASEDIR
@@ -44,7 +47,7 @@ func getEnv(n, d string) string {
 func absPath(p string) string {
 	rp, err := fp.Abs(fp.Clean(p))
 	if err != nil {
-		log.Fatalln("E: config absPath:", p, "-", err)
+		log.Panic("config absPath: %s - %s", p, err)
 	}
 	return rp
 }

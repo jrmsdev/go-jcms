@@ -3,19 +3,21 @@ package app
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
+	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
 
 	// init doctype engines
 	_ "github.com/jrmsdev/go-jcms/lib/internal/doctype/base/loader"
 )
+
+var log = logger.New("app")
 
 type App struct {
 	name string
@@ -24,7 +26,7 @@ type App struct {
 
 func New() (*App, error) {
 	name := env.WebappName()
-	log.Println("app:", name)
+	log.D(name)
 	s, err := getSettings()
 	if err != nil {
 		return nil, err
@@ -35,7 +37,7 @@ func New() (*App, error) {
 
 func getSettings() (*Settings, error) {
 	fn := env.SettingsFile()
-	log.Println("app:", fn)
+	log.D(fn)
 	if !fsutils.FileExists(fn) {
 		return nil, fmt.Errorf("file not found: %s", fn)
 	}
@@ -91,13 +93,13 @@ func doctypeEngine(
 	req *http.Request,
 	resp *response.Response,
 ) context.Context {
-	log.Println("app: view doctype", view.Doctype)
+	log.D("view doctype", view.Doctype)
 	eng, err := doctype.GetEngine(view.Doctype)
 	if err != nil {
 		resp.SetError(http.StatusInternalServerError, err.Error())
 		ctx = appctx.Fail(ctx)
 		return ctx
 	}
-	log.Println("app: view engine", eng.String())
+	log.D("view engine", eng.String())
 	return eng.Handle(view, req, resp)
 }

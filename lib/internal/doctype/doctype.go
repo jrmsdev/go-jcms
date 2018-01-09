@@ -2,9 +2,11 @@ package doctype
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 )
 
+var log = logger.New("doctype")
 var engMap map[string]Engine
 
 func init() {
@@ -16,7 +18,7 @@ func Register(name string, eng Engine) {
 	if exists {
 		panic("doctype engine already registered: " + name)
 	}
-	log.Println("doctype register engine:", name)
+	log.D("register engine:", name)
 	engMap[name] = eng
 }
 

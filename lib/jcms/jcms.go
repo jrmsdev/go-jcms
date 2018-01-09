@@ -1,20 +1,22 @@
 package jcms
 
 import (
-	"log"
+	"os"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
+	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/webapps"
 	"github.com/jrmsdev/go-jcms/lib/jcms/version"
 )
 
+var log = logger.New("jcms")
 var listening = false
 var webappsStarted = false
 
 func Listen() string {
-	log.Printf("%s version %s\n", "jcms", version.String())
+	log.V("jcms version %s", version.String())
 	uri := httpd.Listen()
-	log.Println("URI:", uri.String())
+	log.V("URI:", uri.String())
 	listening = true
 	return uri.String()
 }
@@ -27,7 +29,7 @@ func Serve() {
 		}
 		httpd.Serve()
 	} else {
-		log.Fatalln("E: call jcms.Listen() first")
+		log.Panic("call jcms.Listen() first")
 	}
 }
 
@@ -36,7 +38,22 @@ func Stop() {
 		httpd.Stop()
 		listening = false
 	} else {
-		log.Println("E: trying to stop a not listening server...")
-		log.Fatalln("E: jcms.Listen() and jcms.Server() should be called first")
+		log.E("trying to stop a not listening server...")
+		log.Panic("jcms.Listen() and jcms.Server() should be called first")
+	}
+}
+
+func Logger(tag string) *logger.Logger {
+	return logger.New(tag)
+}
+
+func LogFile(fh *os.File) error {
+	return logger.File(fh)
+}
+
+func LogClose() {
+	err := logger.Close()
+	if err != nil {
+		panic(err)
 	}
 }

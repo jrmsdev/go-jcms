@@ -3,7 +3,6 @@ package text
 import (
 	"context"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path"
@@ -14,9 +13,12 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/base"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
+	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
 )
+
+var log = logger.New("doctype.text")
 
 func init() {
 	doctype.Register("text", newEngine())
@@ -39,23 +41,23 @@ func (e *engine) Handle(
 	req *http.Request,
 	resp *response.Response,
 ) context.Context {
-	log.Println(e, "handle")
+	log.D("%s handle", e)
 	ctx := req.Context()
 	docroot := filepath.Join(env.WebappDir(), "docroot")
 	if !fsutils.DirExists(docroot) {
-		log.Println("E: docroot not found:", docroot)
+		log.E("docroot not found:", docroot)
 		resp.SetError(http.StatusInternalServerError, "docroot not found")
 		return appctx.Fail(ctx)
 	}
 	filename, ok := getFilename(view, req, docroot)
 	if !ok {
-		log.Println("E: file not found:", filename)
+		log.E("file not found:", filename)
 		resp.SetError(http.StatusNotFound, "file not found")
 		return appctx.Fail(ctx)
 	}
 	err := sendFile(resp, filename)
 	if err != nil {
-		log.Println("E:", err)
+		log.E(err.Error())
 		resp.SetError(http.StatusInternalServerError, err.Error())
 		return appctx.Fail(ctx)
 	}

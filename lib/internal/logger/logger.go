@@ -2,7 +2,6 @@ package logger
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 )
@@ -39,7 +38,7 @@ func New(tag string) *Logger {
 			os.ModePerm,
 		)
 		if err != nil {
-			log.Fatalln("[PANIC] logger: new outfh:", err)
+			panic(fmt.Sprintf("logger open: %s", err))
 		}
 	}
 	return &Logger{tag, true, true}
@@ -105,7 +104,7 @@ func (l *Logger) log(e *logEntry, fmtstr string, args ...interface{}) {
 	s := fmt.Sprintf("%s: %s\n", e.String(), fmt.Sprintf(fmtstr, args...))
 	_, err := outfh.WriteString(s)
 	if err != nil {
-		log.Fatalln("[PANIC] logger write:", err)
+		panic(fmt.Sprintf("logger write: %s", err))
 	}
 }
 

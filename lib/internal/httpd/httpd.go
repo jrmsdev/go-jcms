@@ -2,13 +2,15 @@ package httpd
 
 import (
 	"context"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 )
 
+var log = logger.New("httpd")
 var addr = "127.0.0.1:0"
 var servemux = http.NewServeMux()
 var listener net.Listener
@@ -25,7 +27,7 @@ func Listen() *url.URL {
 	var err error
 	listener, err = net.Listen("tcp4", addr)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panic(err.Error())
 	}
 	url := &url.URL{}
 	url.Scheme = "http"
@@ -35,24 +37,24 @@ func Listen() *url.URL {
 }
 
 func Serve() {
-	log.Println("httpd: serve")
+	log.D("serve")
 	if listener == nil {
-		log.Fatalln("nil listener... call httpd.Listen() first")
+		log.Panic("nil listener... call httpd.Listen() first")
 	}
 	var err error
 	err = server.Serve(listener)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panic(err.Error())
 	}
 }
 
 func Stop() {
-	log.Println("httpd: stop")
+	log.D("stop")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	err := server.Shutdown(ctx)
 	if err != nil {
-		log.Println("E: httpd shutdown:", err)
+		log.E("shutdown:", err)
 	}
 }
 

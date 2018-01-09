@@ -1,7 +1,6 @@
 package webapps
 
 import (
-	"log"
 	"net/http"
 	"path/filepath"
 
@@ -9,11 +8,14 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
+	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 )
 
+var log = logger.New("webapps")
+
 func Start() {
-	log.Println("webapps: start")
+	log.D("start")
 	a, err := app.New()
 	if err != nil {
 		errHandler(err)
@@ -24,7 +26,7 @@ func Start() {
 }
 
 func staticHandler(a *app.App) {
-	log.Println("static handler:", a)
+	log.D("static handler: %s", a)
 	staticdir := filepath.Join(env.WebappDir(), "static")
 	httpd.Handle("/static/",
 		http.StripPrefix("/static/",
@@ -32,7 +34,7 @@ func staticHandler(a *app.App) {
 }
 
 func mainHandler(a *app.App) {
-	log.Println("main handler:", a)
+	log.D("main handler: %s", a)
 	httpd.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		resp := response.New()
 		req, cancel := appctx.New(req)
@@ -50,14 +52,14 @@ func mainHandler(a *app.App) {
 
 func errHandler(err error) {
 	httpd.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("INTERNAL ERROR:", err.Error())
+		log.E("INTERNAL ERROR: %s", err)
 		http.Error(w, "INTERNAL ERROR: "+err.Error(),
 			http.StatusInternalServerError)
 	})
 }
 
 func respError(w http.ResponseWriter, resp *response.Response) {
-	log.Println("ERROR:", resp.Error())
+	log.E(resp.Error())
 	http.Error(w, "ERROR: "+resp.Error(), resp.Status())
 }
 
@@ -73,11 +75,11 @@ func respHeaders(w http.ResponseWriter, resp *response.Response) {
 }
 
 func writeResp(w http.ResponseWriter, resp *response.Response) {
-	log.Println("write response")
+	log.D("write response")
 	respHeaders(w, resp)
 	sent, err := w.Write(resp.Body())
 	if err != nil {
-		log.Fatalln("PANIC: write response:", err.Error())
+		log.Panic("write response: %s", err)
 	}
-	log.Println("response sent:", sent)
+	log.D("response sent: %d", sent)
 }

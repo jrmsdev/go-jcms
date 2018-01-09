@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/url"
 
 	"github.com/jrmsdev/go-jcms/lib/jcms"
@@ -17,14 +16,14 @@ const (
 func Webview(req string) {
 	uri, err := url.Parse(jcms.Listen())
 	if err != nil {
-		log.Fatalln(err)
+		log.Panic(err.Error())
 	}
-	log.Println("webview: req", req)
+	log.D("webview: req %#v", req)
 	go func() {
 		jcms.Serve()
 	}()
 	uri.Path = req
-	log.Println("webview: open", uri.String())
+	log.D("webview: open %s", uri.String())
 	xwv.Open("jcms", uri.String(), webviewWidth, webviewHeight, webviewResize)
 	jcms.Stop()
 }
