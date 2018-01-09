@@ -56,6 +56,7 @@ func (e *engine) Handle(
 	err := sendFile(resp, filename)
 	if err != nil {
 		log.Println("E:", err)
+		resp.SetError(http.StatusInternalServerError, err.Error())
 		return appctx.Fail(ctx)
 	}
 	resp.SetStatus(http.StatusOK)
@@ -77,12 +78,10 @@ func getFilename(view *views.View, req *http.Request, docroot string) (string, b
 func sendFile(resp *response.Response, filename string) error {
 	fh, err := os.Open(filename)
 	if err != nil {
-		resp.SetError(http.StatusInternalServerError, err.Error())
 		return err
 	}
 	_, err = io.CopyN(resp, fh, maxSize)
 	if err != nil && err != io.EOF {
-		resp.SetError(http.StatusInternalServerError, err.Error())
 		return err
 	}
 	return nil
