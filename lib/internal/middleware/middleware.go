@@ -10,6 +10,7 @@ import (
 )
 
 var log = logger.New("middleware")
+var mwreg = newRegistry()
 
 type MiddlewareAction int
 
@@ -28,29 +29,12 @@ type Middleware interface {
 	) context.Context
 }
 
-var mwmap = make(map[string]Middleware)
-var actiondb = make(map[MiddlewareAction][]string)
-
-func init() {
-	actiondb[ACTION_PRE] = make([]string, 0)
-	actiondb[ACTION_POST] = make([]string, 0)
-}
-
 func Register(mw Middleware, actions ...MiddlewareAction) {
-	name := mw.Name()
-	_, exists := mwmap[name]
-	if exists {
-		log.Panic("already registered: %s", name)
-	}
-	for _, act := range actions {
-		actiondb[act] = append(actiondb[act], name)
-	}
-	mwmap[name] = mw
+	mwreg.Register(mw, actions...)
 }
 
 func Enable(settings []*Settings) error {
-	// TODO: middleware.Enable
-	return nil
+	return mwreg.Enable(settings)
 }
 
 func Action(
@@ -59,10 +43,8 @@ func Action(
 	action MiddlewareAction,
 	req *http.Request,
 ) context.Context {
-	for _, name := range actiondb[action] {
-		mw := mwmap[name]
-		ctx = mw.Action(ctx, resp, action, req)
-		if appctx.Failed(ctx) {
+	for _, mw := range mwreg.GetAll(action) {
+		if ctx := mw.Action(ctx, resp, action, req); appctx.Failed(ctx) {
 			return ctx
 		}
 	}
