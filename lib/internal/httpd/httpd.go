@@ -44,7 +44,7 @@ func Serve() {
 	var err error
 	err = server.Serve(listener)
 	if err != nil {
-		log.Panic(err.Error())
+		log.E(err.Error())
 	}
 }
 
