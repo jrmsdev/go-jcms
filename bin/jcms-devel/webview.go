@@ -18,12 +18,12 @@ func Webview(req string) {
 	if err != nil {
 		log.Panic(err.Error())
 	}
-	log.D("webview: req %#v", req)
 	go func() {
 		jcms.Serve()
 	}()
 	uri.Path = req
-	log.D("webview: open %s", uri.String())
-	xwv.Open("jcms", uri.String(), webviewWidth, webviewHeight, webviewResize)
+	log.D("open %s", uri.String())
+	xwv.Open("jcms-devel", uri.String(),
+		webviewWidth, webviewHeight, webviewResize)
 	jcms.Stop()
 }

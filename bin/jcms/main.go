@@ -1,15 +1,25 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"os"
 
 	"github.com/jrmsdev/go-jcms/lib/jcms"
 )
 
+var loglevel string
+
+func init() {
+	flag.StringVar(&loglevel, "log", "verbose", "set log `level`")
+}
+
 func main() {
-	err := jcms.LogStart("error", os.Stderr)
+	flag.Parse()
+	err := jcms.LogStart(loglevel, os.Stderr)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	defer jcms.LogStop()
 	jcms.Listen()

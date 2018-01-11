@@ -14,9 +14,9 @@ var listening = false
 var webappsStarted = false
 
 func Listen() string {
-	log.Print("jcms version %s", version.String())
+	log.Print("version %s", version.String())
 	uri := httpd.Listen()
-	log.Print("URI: %s", uri.String())
+	log.Print("%s", uri.String())
 	listening = true
 	return uri.String()
 }
