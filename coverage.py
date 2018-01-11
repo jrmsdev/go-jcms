@@ -21,32 +21,9 @@ HTML_HEAD = '''
                 background: black;
                 color: rgb(80, 80, 80);
             }
-            body, pre, #legend span {
+            body, pre, span {
                 font-family: Menlo, monospace;
                 font-weight: bold;
-            }
-            #topbar {
-                background: black;
-                position: fixed;
-                top: 0; left: 0; right: 0;
-                height: 42px;
-                border-bottom: 1px solid rgb(80, 80, 80);
-            }
-            #content {
-                margin-top: 50px;
-            }
-            #nav, #legend {
-                float: left;
-                margin-left: 10px;
-            }
-            #legend {
-                margin-top: 12px;
-            }
-            #nav {
-                margin-top: 10px;
-            }
-            #legend span {
-                margin: 0 5px;
             }
             .cov0 { color: rgb(192, 0, 0) }
             .cov1 { color: rgb(128, 128, 128) }
