@@ -10,20 +10,20 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/testing/testeng"
 )
 
-const engTestName = "text"
+const testengName = "text"
 
 func TestEngine(t *testing.T) {
-	e, err := doctype.GetEngine(engTestName)
+	e, err := doctype.GetEngine(testengName)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if e.Type() != engTestName {
-		t.Error(".Type !=", engTestName)
+	if e.Type() != testengName {
+		t.Error(".Type !=", testengName)
 	}
 }
 
 func TestHandle(t *testing.T) {
-	r := testeng.Handle(t, engTestName, &testeng.Query{})
+	r := testeng.Handle(t, testengName, &testeng.Query{})
 	if appctx.Failed(r.Ctx) {
 		t.Error("handle context should not fail:", r.Resp.Error())
 	}
@@ -38,7 +38,7 @@ func TestHandle(t *testing.T) {
 }
 
 func TestHandleNotFound(t *testing.T) {
-	r := testeng.Handle(t, engTestName, &testeng.Query{Path: "/invaliduri"})
+	r := testeng.Handle(t, testengName, &testeng.Query{Path: "/invaliduri"})
 	if !appctx.Failed(r.Ctx) {
 		t.Error("handle context should fail")
 	}
