@@ -1,13 +1,14 @@
 package middleware
 
 import (
-	"encoding/xml"
 	"fmt"
+
+	"github.com/jrmsdev/go-jcms/lib/internal/settings/args"
 )
 
 type Settings struct {
-	XMLName xml.Name `xml:"middleware"`
-	Name    string   `xml:"name,attr"`
+	Name    string
+	args.Args
 }
 
 func (s *Settings) String() string {

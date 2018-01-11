@@ -1,0 +1,71 @@
+{
+	"View": [
+		{
+			"Name": "home",
+			"Path": "/",
+			"Doctype": "text",
+			"Redirect": "",
+			"Location": ""
+		},
+		{
+			"Name": "testing",
+			"Path": "/test",
+			"Doctype": "text",
+			"Redirect": "",
+			"Location": ""
+		},
+		{
+			"Name": "test.doctype.engine.invalid",
+			"Path": "/test/doctype.engine.invalid",
+			"Doctype": "invalid.engine",
+			"Redirect": "",
+			"Location": ""
+		},
+		{
+			"Name": "test.redirect.permanent",
+			"Path": "/test/redirect/permanent",
+			"Doctype": "",
+			"Redirect": "permanent",
+			"Location": "/test/redirect/location"
+		},
+		{
+			"Name": "test.redirect.temporary",
+			"Path": "/test/redirect/temporary",
+			"Doctype": "",
+			"Redirect": "temporary",
+			"Location": "/test/redirect/location"
+		},
+		{
+			"Name": "test.redirect.invalidstatus",
+			"Path": "/test/redirect/invalidstatus",
+			"Doctype": "",
+			"Redirect": "invalid",
+			"Location": ""
+		},
+		{
+			"Name": "test.redirect.nolocation",
+			"Path": "/test/redirect/nolocation",
+			"Doctype": "",
+			"Redirect": "permanent",
+			"Location": ""
+		},
+		{
+			"Name": "test.view.args.setheader",
+			"Path": "/test/view/args/setheader",
+			"Doctype": "text",
+			"Redirect": "",
+			"Location": "",
+			"Args": {
+				"middleware.setheader.X-Jcms": "lelele"
+			}
+		}
+	],
+	"Middleware": [
+		{
+			"Name": "setheader",
+			"Args": {
+				"X-Jcms": "lalala"
+			}
+		}
+	]
+}

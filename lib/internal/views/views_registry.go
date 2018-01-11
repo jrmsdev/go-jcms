@@ -5,18 +5,19 @@ import (
 	xpath "path"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings/view"
 )
 
 var log = logger.New("views.registry")
 
 type Registry struct {
-	db  map[string]*View
+	db  map[string]*view.Settings
 	idx map[string]string // paths index for faster access (I hope)
 }
 
-func Register(vlist []*View) *Registry {
+func Register(vlist []*view.Settings) *Registry {
 	r := &Registry{}
-	r.db = make(map[string]*View)
+	r.db = make(map[string]*view.Settings)
 	r.idx = make(map[string]string)
 	for _, v := range vlist {
 		// clean view path, it comes from settings.xml file
@@ -28,7 +29,7 @@ func Register(vlist []*View) *Registry {
 	return r
 }
 
-func (r *Registry) Get(path string) (*View, error) {
+func (r *Registry) Get(path string) (*view.Settings, error) {
 	idx, found := r.idx[path]
 	if !found {
 		log.E("not found: %s", path)
@@ -41,7 +42,7 @@ func (r *Registry) Get(path string) (*View, error) {
 	return v, nil
 }
 
-func (r *Registry) useView(path, name string) (*View, error) {
+func (r *Registry) useView(path, name string) (*view.Settings, error) {
 	log.D("useview: %s", name)
 	v, found := r.db[name]
 	if !found {

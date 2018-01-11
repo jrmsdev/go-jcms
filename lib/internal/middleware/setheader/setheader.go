@@ -7,9 +7,11 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
 
-var log = logger.New("middleware.setheader")
+const jcmsid = "middleware.setheader"
+var log = logger.New(jcmsid)
 
 func init() {
 	middleware.Register(&Middleware{}, middleware.ACTION_POST)
@@ -24,8 +26,10 @@ func (m *Middleware) Name() string {
 func (m *Middleware) Action(
 	ctx context.Context,
 	resp *response.Response,
-	action middleware.MiddlewareAction,
 	req *http.Request,
+	cfg *settings.Reader,
+	action middleware.MiddlewareAction,
 ) context.Context {
+	// TODO: setheader middleware Action
 	return ctx
 }

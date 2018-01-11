@@ -7,6 +7,8 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings/middleware"
 )
 
 var log = logger.New("middleware")
@@ -24,8 +26,9 @@ type Middleware interface {
 	Action(
 		ctx context.Context,
 		resp *response.Response,
-		action MiddlewareAction,
 		req *http.Request,
+		cfg *settings.Reader,
+		action MiddlewareAction,
 	) context.Context
 }
 
@@ -33,18 +36,20 @@ func Register(mw Middleware, actions ...MiddlewareAction) {
 	mwreg.Register(mw, actions...)
 }
 
-func Enable(settings []*Settings) error {
+func Enable(settings []*middleware.Settings) error {
 	return mwreg.Enable(settings)
 }
 
 func Action(
 	ctx context.Context,
 	resp *response.Response,
-	action MiddlewareAction,
 	req *http.Request,
+	cfg *settings.Reader,
+	action MiddlewareAction,
 ) context.Context {
 	for _, mw := range mwreg.GetAll(action) {
-		if ctx := mw.Action(ctx, resp, action, req); appctx.Failed(ctx) {
+		ctx = mw.Action(ctx, resp, req, cfg, action)
+		if appctx.Failed(ctx) {
 			return ctx
 		}
 	}

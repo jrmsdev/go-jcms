@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
-	"github.com/jrmsdev/go-jcms/lib/internal/views"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
 
 type Engine interface {
 	Type() string
 	String() string
 	Handle(context.Context, *response.Response,
-		*views.View, *http.Request) context.Context
+		*http.Request, *settings.Reader) context.Context
 }

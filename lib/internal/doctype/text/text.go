@@ -14,7 +14,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
-	"github.com/jrmsdev/go-jcms/lib/internal/views"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
 
 var log = logger.New("doctype.text")
@@ -38,8 +38,8 @@ func newEngine() *engine {
 func (e *engine) Handle(
 	ctx context.Context,
 	resp *response.Response,
-	view *views.View,
 	req *http.Request,
+	cfg *settings.Reader,
 ) context.Context {
 	log.D("%s handle", e)
 	docroot := filepath.Join(env.WebappDir(), "docroot")
@@ -48,7 +48,7 @@ func (e *engine) Handle(
 		return resp.SetError(ctx,
 			http.StatusInternalServerError, "docroot not found")
 	}
-	filename, ok := getFilename(view, req, docroot)
+	filename, ok := getFilename(cfg, req, docroot)
 	if !ok {
 		log.E("file not found:", filename)
 		return resp.SetError(ctx,
@@ -64,10 +64,10 @@ func (e *engine) Handle(
 	return ctx
 }
 
-func getFilename(view *views.View, req *http.Request, docroot string) (string, bool) {
+func getFilename(cfg *settings.Reader, req *http.Request, docroot string) (string, bool) {
 	fn := req.URL.Path
 	if fn == "" || fn == "/" {
-		fn = path.Clean(view.Path)
+		fn = path.Clean(cfg.View.Path)
 	}
 	filename := filepath.Join(docroot, fn+".txt")
 	if !fsutils.FileExists(filename) {

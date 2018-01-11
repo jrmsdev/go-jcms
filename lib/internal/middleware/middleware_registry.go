@@ -2,6 +2,8 @@ package middleware
 
 import (
 	"fmt"
+
+	"github.com/jrmsdev/go-jcms/lib/internal/settings/middleware"
 )
 
 type mwRegistry struct {
@@ -33,7 +35,7 @@ func (r *mwRegistry) Register(mw Middleware, actions ...MiddlewareAction) {
 	r.db[name] = mw
 }
 
-func (r *mwRegistry) Enable(settings []*Settings) error {
+func (r *mwRegistry) Enable(settings []*middleware.Settings) error {
 	r.enable[ACTION_PRE] = make([]string, 0)
 	r.enable[ACTION_POST] = make([]string, 0)
 	for _, s := range settings {

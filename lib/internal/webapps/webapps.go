@@ -10,17 +10,35 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings"
+	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
 )
 
 var log = logger.New("webapps")
 
 func Start() {
-	log.D("start")
-	a, err := app.New()
+	name := env.WebappName()
+	log.D("start: %s", name)
+	// read settings
+	s, err := settings.New(env.SettingsFile())
 	if err != nil {
 		errHandler(err)
 		return
 	}
+	// TODO: cfg.Validate()?
+	// app
+	var a *app.App
+	a, err = app.New(name, s)
+	if err != nil {
+		errHandler(err)
+		return
+	}
+	// middleware enable
+	if err = middleware.Enable(s.MiddlewareList); err != nil {
+		errHandler(err)
+		return
+	}
+	// app handlers
 	staticHandler(a)
 	mainHandler(a)
 }
