@@ -13,6 +13,8 @@ import (
 //~ var log = logger.New("settings")
 
 type Settings struct {
+	Title string
+	Theme string
 	ViewList       []*view.Settings       `json:"View"`
 	MiddlewareList []*middleware.Settings `json:"Middleware"`
 }

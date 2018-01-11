@@ -13,6 +13,7 @@ type Settings struct {
 	Redirect string
 	Location string
 	UseView  string
+	Theme    string
 	args.Args
 }
 

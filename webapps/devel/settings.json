@@ -1,5 +1,6 @@
 {
 	"Title": "JCMS Devel",
+	"Theme": "devel",
 	"View": [
 		{
 			"Path": "/",
