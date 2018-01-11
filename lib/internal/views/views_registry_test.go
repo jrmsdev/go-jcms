@@ -2,30 +2,32 @@ package views
 
 import (
 	"testing"
+
+	"github.com/jrmsdev/go-jcms/lib/internal/settings/view"
 )
 
-var testViews []*View
+var testViews []*view.Settings
 
 func init() {
-	testViews = make([]*View, 0)
-	testViews = append(testViews, &View{
+	testViews = make([]*view.Settings, 0)
+	testViews = append(testViews, &view.Settings{
 		Name: "home",
 		Path: "/",
 	})
-	testViews = append(testViews, &View{
+	testViews = append(testViews, &view.Settings{
 		Name: "view0",
 		Path: "/pathto/view0",
 	})
-	testViews = append(testViews, &View{
+	testViews = append(testViews, &view.Settings{
 		Name: "view1",
 		Path: "/pathto/view1",
 	})
-	testViews = append(testViews, &View{
+	testViews = append(testViews, &view.Settings{
 		Name:    "view2",
 		Path:    "/pathto/view2",
 		UseView: "view1",
 	})
-	testViews = append(testViews, &View{
+	testViews = append(testViews, &view.Settings{
 		Name:    "view3",
 		Path:    "/pathto/view3",
 		UseView: "notexistentview",

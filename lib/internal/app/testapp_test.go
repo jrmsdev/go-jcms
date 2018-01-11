@@ -8,18 +8,22 @@ import (
 	"path/filepath"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
+	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
 
 type testapp struct {
 }
 
 type testappResult struct {
-	App  *App
-	Req  *http.Request
-	Resp *response.Response
-	Ctx  context.Context
-	Err  error
+	App      *App
+	Req      *http.Request
+	Resp     *response.Response
+	Ctx      context.Context
+	Err      error
+	AppName  string
+	Settings *settings.Settings
 }
 
 func newTestApp() *testapp {
@@ -36,7 +40,8 @@ func testappEnv(appname string) {
 	os.Setenv("JCMS_WEBAPP", appname)
 	os.Setenv("JCMS_BASEDIR",
 		filepath.Join(os.Getenv("GOPATH"),
-			"src", "github.com", "jrmsdev", "go-jcms", "webapps"))
+			"src", "github.com", "jrmsdev",
+			"go-jcms", "webapps", "testing"))
 }
 
 func (a *testapp) getReq(ctx context.Context, path string) *http.Request {
@@ -52,11 +57,18 @@ func (a *testapp) Handle(path string) *testappResult {
 		cancel context.CancelFunc
 	)
 	r := &testappResult{}
+	r.AppName = "testing"
+	r.Err = nil
+	r.Settings, err = settings.New(env.SettingsFile())
+	if err != nil {
+		r.Err = err
+		return r
+	}
 	r.Ctx, cancel = appctx.New()
 	defer cancel()
 	r.Req = a.getReq(r.Ctx, path)
 	r.Resp = response.New()
-	r.App, err = New()
+	r.App, err = New(r.AppName, r.Settings)
 	if err != nil {
 		r.Err = err
 		return r

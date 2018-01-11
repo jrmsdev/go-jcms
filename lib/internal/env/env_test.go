@@ -23,10 +23,10 @@ func TestWebappDir(t *testing.T) {
 }
 
 func TestSettingsFile(t *testing.T) {
-	okfn := absPath(filepath.FromSlash("/opt/jcms/default/settings.xml"))
+	okfn := absPath(filepath.FromSlash("/opt/jcms/default/settings.json"))
 	fn := SettingsFile()
 	if fn != okfn {
-		t.Log("expected:", fn)
+		t.Log("expected:", okfn)
 		t.Error("invalid webapp settings file:", fn)
 	}
 }

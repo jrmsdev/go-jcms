@@ -11,20 +11,22 @@ import (
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
+	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
-	"github.com/jrmsdev/go-jcms/lib/internal/views"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings/view"
 )
 
 func testappEnv(appname string) {
 	if appname == "" {
 		os.Setenv("JCMS_WEBAPP", "")
 		os.Setenv("JCMS_BASEDIR", "")
-		return
 	}
 	os.Setenv("JCMS_WEBAPP", appname)
 	os.Setenv("JCMS_BASEDIR",
 		filepath.Join(os.Getenv("GOPATH"),
-			"src", "github.com", "jrmsdev", "go-jcms", "webapps"))
+			"src", "github.com", "jrmsdev",
+			"go-jcms", "webapps", "testing"))
 }
 
 func getReq(ctx context.Context, path string) *http.Request {
@@ -32,6 +34,19 @@ func getReq(ctx context.Context, path string) *http.Request {
 	req := r.WithContext(ctx)
 	req.URL, _ = url.Parse("http://127.0.0.1:0" + path)
 	return req
+}
+
+func getCfg(
+	name string,
+	path string,
+	dtype string,
+) (*settings.Reader, error) {
+	s, err := settings.New(env.SettingsFile())
+	if err != nil {
+		return nil, err
+	}
+	v := &view.Settings{Name: name, Path: path, Doctype: dtype}
+	return settings.NewReader(s, v), nil
 }
 
 func TestEngine(t *testing.T) {
@@ -54,16 +69,15 @@ func testType(t *testing.T, e doctype.Engine) {
 func testHandle(t *testing.T, e doctype.Engine) {
 	testappEnv("testing")
 	defer testappEnv("")
-	view := &views.View{
-		Name:    "testview",
-		Path:    "/pathto/testview",
-		Doctype: "text",
+	cfg, err := getCfg("testview", "/pathto/testview", "text")
+	if err != nil {
+		t.Fatal(err)
 	}
 	ctx, cancel := appctx.New()
 	defer cancel()
 	req := getReq(ctx, "/test")
 	resp := response.New()
-	ctx = e.Handle(ctx, resp, view, req)
+	ctx = e.Handle(ctx, resp, req, cfg)
 	if appctx.Failed(ctx) {
 		t.Error("handle context should not fail:", resp.Error())
 	}
@@ -78,16 +92,17 @@ func testHandle(t *testing.T, e doctype.Engine) {
 }
 
 func testHandleDocrootError(t *testing.T, e doctype.Engine) {
-	view := &views.View{
-		Name:    "testview",
-		Path:    "/pathto/testview",
-		Doctype: "text",
+	testappEnv("nodocroot")
+	defer testappEnv("")
+	cfg, err := getCfg("testview", "/pathto/testview", "text")
+	if err != nil {
+		t.Fatal(err)
 	}
 	ctx, cancel := appctx.New()
 	defer cancel()
 	req := getReq(ctx, "/")
 	resp := response.New()
-	ctx = e.Handle(ctx, resp, view, req)
+	ctx = e.Handle(ctx, resp, req, cfg)
 	if !appctx.Failed(ctx) {
 		t.Error("handle context has not failed")
 	}
@@ -100,16 +115,15 @@ func testHandleDocrootError(t *testing.T, e doctype.Engine) {
 func testHandleNotFound(t *testing.T, e doctype.Engine) {
 	testappEnv("testing")
 	defer testappEnv("")
-	view := &views.View{
-		Name:    "testview",
-		Path:    "/pathto/testview",
-		Doctype: "text",
+	cfg, err := getCfg("testview", "/pathto/testview", "text")
+	if err != nil {
+		t.Fatal(err)
 	}
 	ctx, cancel := appctx.New()
 	defer cancel()
 	req := getReq(ctx, "/invaliduri")
 	resp := response.New()
-	ctx = e.Handle(ctx, resp, view, req)
+	ctx = e.Handle(ctx, resp, req, cfg)
 	if !appctx.Failed(ctx) {
 		t.Error("handle context should fail")
 	}

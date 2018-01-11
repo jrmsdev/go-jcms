@@ -7,7 +7,7 @@ import (
 
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/base"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
-	"github.com/jrmsdev/go-jcms/lib/internal/views"
+	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
 
 type testEngine struct {
@@ -21,8 +21,8 @@ func newTestEngine() *testEngine {
 func (e *testEngine) Handle(
 	ctx context.Context,
 	_ *response.Response,
-	_ *views.View,
 	_ *http.Request,
+	_ *settings.Reader,
 ) context.Context {
 	return ctx
 }
