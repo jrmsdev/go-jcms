@@ -5,16 +5,16 @@ import (
 )
 
 type mwRegistry struct {
-	db map[string]Middleware
+	db       map[string]Middleware
 	actiondb map[MiddlewareAction][]string
-	enable map[MiddlewareAction][]string
+	enable   map[MiddlewareAction][]string
 }
 
 func newRegistry() *mwRegistry {
 	return &mwRegistry{
-		db: make(map[string]Middleware),
+		db:       make(map[string]Middleware),
 		actiondb: make(map[MiddlewareAction][]string),
-		enable: make(map[MiddlewareAction][]string),
+		enable:   make(map[MiddlewareAction][]string),
 	}
 }
 
