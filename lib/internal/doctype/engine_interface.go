@@ -11,6 +11,6 @@ import (
 type Engine interface {
 	Type() string
 	String() string
-	Handle(context.Context, *response.Response,
-		*http.Request, *settings.Reader) context.Context
+	Handle(context.Context, *response.Response, *http.Request,
+		*settings.Reader, string) context.Context
 }

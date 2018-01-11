@@ -4,9 +4,12 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"path/filepath"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
+	"github.com/jrmsdev/go-jcms/lib/internal/env"
+	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
@@ -98,5 +101,12 @@ func doctypeEngine(
 		return resp.SetError(ctx,
 			http.StatusInternalServerError, err.Error())
 	}
-	return eng.Handle(ctx, resp, req, cfg)
+	docroot := filepath.Join(env.WebappDir(), "docroot")
+	if !fsutils.DirExists(docroot) {
+		log.E("docroot not found:", docroot)
+		return resp.SetError(ctx,
+			http.StatusInternalServerError, "docroot not found")
+	}
+	log.D("%s handle", eng)
+	return eng.Handle(ctx, resp, req, cfg, docroot)
 }

@@ -23,6 +23,7 @@ func (e *testEngine) Handle(
 	_ *response.Response,
 	_ *http.Request,
 	_ *settings.Reader,
+	_ string,
 ) context.Context {
 	return ctx
 }

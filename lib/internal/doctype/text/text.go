@@ -10,7 +10,6 @@ import (
 
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/base"
-	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
@@ -40,14 +39,8 @@ func (e *engine) Handle(
 	resp *response.Response,
 	req *http.Request,
 	cfg *settings.Reader,
+	docroot string,
 ) context.Context {
-	log.D("%s handle", e)
-	docroot := filepath.Join(env.WebappDir(), "docroot")
-	if !fsutils.DirExists(docroot) {
-		log.E("docroot not found:", docroot)
-		return resp.SetError(ctx,
-			http.StatusInternalServerError, "docroot not found")
-	}
 	filename, ok := getFilename(cfg, req, docroot)
 	if !ok {
 		log.E("file not found:", filename)

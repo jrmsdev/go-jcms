@@ -30,6 +30,7 @@ func (e *engine) Handle(
 	resp *response.Response,
 	req *http.Request,
 	cfg *settings.Reader,
+	docroot string,
 ) context.Context {
 	resp.SetStatus(http.StatusOK)
 	return ctx

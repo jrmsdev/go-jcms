@@ -16,16 +16,21 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/settings/view"
 )
 
+var docroot string
+
 func testappEnv(appname string) {
 	if appname == "" {
 		os.Setenv("JCMS_WEBAPP", "")
 		os.Setenv("JCMS_BASEDIR", "")
+		docroot = ""
+		return
 	}
+	basedir := filepath.Join(os.Getenv("GOPATH"),
+		"src", "github.com", "jrmsdev",
+		"go-jcms", "webapps", "testing")
+	docroot = filepath.Join(basedir, appname, "docroot")
 	os.Setenv("JCMS_WEBAPP", appname)
-	os.Setenv("JCMS_BASEDIR",
-		filepath.Join(os.Getenv("GOPATH"),
-			"src", "github.com", "jrmsdev",
-			"go-jcms", "webapps", "testing"))
+	os.Setenv("JCMS_BASEDIR", basedir)
 }
 
 func getReq(ctx context.Context, path string) *http.Request {
@@ -74,7 +79,7 @@ func testHandle(t *testing.T, e doctype.Engine) {
 	defer cancel()
 	req := getReq(ctx, "/test")
 	resp := response.New()
-	ctx = e.Handle(ctx, resp, req, cfg)
+	ctx = e.Handle(ctx, resp, req, cfg, docroot)
 	if appctx.Failed(ctx) {
 		t.Error("handle context should not fail:", resp.Error())
 	}
