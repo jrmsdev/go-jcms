@@ -16,6 +16,10 @@ type Settings struct {
 	args.Args
 }
 
+func (v *Settings) ID() string {
+	return fmt.Sprintf("view.%s", v.Name)
+}
+
 func (v *Settings) String() string {
-	return fmt.Sprintf("view.%s: settings", v.Name)
+	return fmt.Sprintf("%s settings", v.ID())
 }

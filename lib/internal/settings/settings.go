@@ -12,10 +12,6 @@ import (
 
 //~ var log = logger.New("settings")
 
-type Section interface {
-	ID() string
-}
-
 type Settings struct {
 	ViewList       []*view.Settings       `json:"View"`
 	MiddlewareList []*middleware.Settings `json:"Middleware"`

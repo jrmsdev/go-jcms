@@ -16,5 +16,5 @@ func (s Settings) ID() string {
 }
 
 func (s *Settings) String() string {
-	return fmt.Sprintf("%s: settings", s.ID())
+	return fmt.Sprintf("%s settings", s.ID())
 }
