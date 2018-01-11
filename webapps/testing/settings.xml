@@ -40,7 +40,7 @@
 		redirect="permanent"
 		location=""
 	/>
-	<middleware name="respheader">
+	<middleware name="setheader">
 		<arg name="X-Jcms" value="lalala" />
 	</middleware>
 </webapp>

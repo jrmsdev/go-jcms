@@ -1,4 +1,5 @@
 package loader
 
-func dummyFunc() {
-}
+import (
+	_ "github.com/jrmsdev/go-jcms/lib/internal/middleware/setheader"
+)
