@@ -9,6 +9,7 @@ import (
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
+	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
@@ -18,7 +19,7 @@ type testapp struct {
 
 type testappResult struct {
 	App      *App
-	Req      *http.Request
+	Req      *request.Request
 	Resp     *response.Response
 	Ctx      context.Context
 	Err      error
@@ -44,11 +45,10 @@ func testappEnv(appname string) {
 			"go-jcms", "webapps", "testing"))
 }
 
-func (a *testapp) getReq(ctx context.Context, path string) *http.Request {
+func (a *testapp) getReq(ctx context.Context, path string) *request.Request {
 	r := &http.Request{}
-	req := r.WithContext(ctx)
-	req.URL, _ = url.Parse("http://127.0.0.1:0" + path)
-	return req
+	r.URL, _ = url.Parse("http://127.0.0.1:0" + path)
+	return request.New(ctx, r)
 }
 
 func (a *testapp) Handle(path string) *testappResult {

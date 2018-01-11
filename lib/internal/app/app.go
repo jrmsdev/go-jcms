@@ -12,6 +12,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
+	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
@@ -41,7 +42,7 @@ func (a *App) String() string {
 func (a *App) Handle(
 	ctx context.Context,
 	resp *response.Response,
-	req *http.Request,
+	req *request.Request,
 ) context.Context {
 	// view handler
 	view, err := a.vreg.Get(req.URL.Path)
@@ -92,7 +93,7 @@ func respRedirect(
 func doctypeEngine(
 	ctx context.Context,
 	resp *response.Response,
-	req *http.Request,
+	req *request.Request,
 	cfg *settings.Reader,
 ) context.Context {
 	log.D("view doctype %s", cfg.View.Doctype)

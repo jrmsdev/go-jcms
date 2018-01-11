@@ -2,10 +2,10 @@ package setheader
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
+	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
@@ -27,7 +27,7 @@ func (m *Middleware) Name() string {
 func (m *Middleware) Action(
 	ctx context.Context,
 	resp *response.Response,
-	_ *http.Request,
+	_ *request.Request,
 	cfg *settings.Reader,
 	action middleware.MiddlewareAction,
 ) context.Context {

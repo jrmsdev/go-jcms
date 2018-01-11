@@ -4,10 +4,10 @@ package middleware
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
+	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings/middleware"
@@ -28,7 +28,7 @@ type Middleware interface {
 	Action(
 		ctx context.Context,
 		resp *response.Response,
-		req *http.Request,
+		req *request.Request,
 		cfg *settings.Reader,
 		action MiddlewareAction,
 	) context.Context
@@ -45,7 +45,7 @@ func Enable(settings []*middleware.Settings) error {
 func Action(
 	ctx context.Context,
 	resp *response.Response,
-	req *http.Request,
+	req *request.Request,
 	cfg *settings.Reader,
 	action MiddlewareAction,
 ) context.Context {

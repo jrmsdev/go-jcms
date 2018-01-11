@@ -7,6 +7,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
+	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 )
 
@@ -17,14 +18,14 @@ func Handle(a *app.App) {
 	httpd.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := appctx.New()
 		defer cancel()
-		req := r.WithContext(ctx)
+		req := request.New(ctx, r)
 		resp := response.New()
 		// app handle
 		ctx = a.Handle(ctx, resp, req)
 		if appctx.Failed(ctx) {
 			respError(w, resp)
 		} else if appctx.Redirect(ctx) {
-			respRedirect(w, resp, req)
+			respRedirect(w, resp, r)
 		} else {
 			writeResp(w, resp)
 		}
@@ -38,9 +39,9 @@ func respError(w http.ResponseWriter, resp *response.Response) {
 func respRedirect(
 	w http.ResponseWriter,
 	resp *response.Response,
-	req *http.Request,
+	r *http.Request,
 ) {
-	http.Redirect(w, req, resp.Location(), resp.Status())
+	http.Redirect(w, r, resp.Location(), resp.Status())
 }
 
 func respHeaders(w http.ResponseWriter, resp *response.Response) {

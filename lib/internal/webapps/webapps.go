@@ -46,9 +46,9 @@ func Start() {
 }
 
 func errHandler(err error) {
-	httpd.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	httpd.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		log.E("INTERNAL ERROR: %s", err)
-		http.Error(w, "INTERNAL ERROR: no settings file",
+		http.Error(w, "INTERNAL ERROR: "+err.Error(),
 			http.StatusInternalServerError)
 	})
 }

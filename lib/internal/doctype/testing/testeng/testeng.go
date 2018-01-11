@@ -11,6 +11,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
+	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings/view"
@@ -19,7 +20,7 @@ import (
 type Result struct {
 	Ctx     context.Context
 	Resp    *response.Response
-	Req     *http.Request
+	Req     *request.Request
 	Cfg     *settings.Reader
 	Docroot string
 }
@@ -106,9 +107,8 @@ func getCfg(
 	return settings.NewReader(s, v), nil
 }
 
-func getReq(ctx context.Context, path string) *http.Request {
+func getReq(ctx context.Context, path string) *request.Request {
 	r := &http.Request{}
-	req := r.WithContext(ctx)
-	req.URL, _ = url.Parse("http://127.0.0.1:0" + path)
-	return req
+	r.URL, _ = url.Parse("http://127.0.0.1:0" + path)
+	return request.New(ctx, r)
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/base"
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
+	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
@@ -37,7 +38,7 @@ func newEngine() *engine {
 func (e *engine) Handle(
 	ctx context.Context,
 	resp *response.Response,
-	req *http.Request,
+	req *request.Request,
 	cfg *settings.Reader,
 	docroot string,
 ) context.Context {
@@ -57,7 +58,7 @@ func (e *engine) Handle(
 	return ctx
 }
 
-func getFilename(cfg *settings.Reader, req *http.Request, docroot string) (string, bool) {
+func getFilename(cfg *settings.Reader, req *request.Request, docroot string) (string, bool) {
 	fn := req.URL.Path
 	if fn == "" || fn == "/" {
 		fn = path.Clean(cfg.View.Path)

@@ -2,10 +2,10 @@ package doctype
 
 import (
 	"context"
-	"net/http"
 	"testing"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/base"
+	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
@@ -21,7 +21,7 @@ func newTestEngine() *testEngine {
 func (e *testEngine) Handle(
 	ctx context.Context,
 	_ *response.Response,
-	_ *http.Request,
+	_ *request.Request,
 	_ *settings.Reader,
 	_ string,
 ) context.Context {
