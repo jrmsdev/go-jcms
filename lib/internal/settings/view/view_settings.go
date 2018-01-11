@@ -17,5 +17,5 @@ type Settings struct {
 }
 
 func (v *Settings) String() string {
-	return fmt.Sprintf("view.settings:%s", v.Name)
+	return fmt.Sprintf("view.%s: settings", v.Name)
 }

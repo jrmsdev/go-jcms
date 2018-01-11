@@ -43,17 +43,13 @@ func (a *App) Handle(
 	resp *response.Response,
 	req *http.Request,
 ) context.Context {
-	// settings reader
-	cfg, err := settings.NewReader(a.settings)
-	if err != nil {
-		return resp.SetError(ctx, http.StatusInternalServerError,
-			err.Error())
-	}
 	// view handler
 	view, err := a.vreg.Get(req.URL.Path)
 	if err != nil {
 		return resp.SetError(ctx, http.StatusNotFound, err.Error())
 	}
+	// settings reader
+	cfg := settings.NewReader(a.settings, view)
 	// view redirect
 	if view.Redirect != "" {
 		return respRedirect(ctx, resp, cfg)

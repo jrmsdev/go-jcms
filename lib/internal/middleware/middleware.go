@@ -48,10 +48,12 @@ func Action(
 	action MiddlewareAction,
 ) context.Context {
 	for _, mw := range mwreg.GetAll(action) {
+		cfg.SetMiddleware(mw.Name())
 		ctx = mw.Action(ctx, resp, req, cfg, action)
 		if appctx.Failed(ctx) {
 			return ctx
 		}
+		cfg.Reset()
 	}
 	return ctx
 }

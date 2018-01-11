@@ -11,6 +11,10 @@ type Settings struct {
 	args.Args
 }
 
+func (s Settings) ID() string {
+	return fmt.Sprintf("middleware.%s", s.Name)
+}
+
 func (s *Settings) String() string {
-	return fmt.Sprintf("middleware.settings:%s", s.Name)
+	return fmt.Sprintf("%s: settings", s.ID())
 }

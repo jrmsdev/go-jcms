@@ -1,7 +1,12 @@
 package args
 
 type Args struct {
-	Args map[string]string `json:",omitempty"`
+	prefix string            `json:"omit"`
+	Args   map[string]string `json:",omitempty"`
+}
+
+func (a *Args) SetPrefix(prefix string) {
+	a.prefix = prefix
 }
 
 func (a *Args) Get(key, defval string) string {

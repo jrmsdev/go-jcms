@@ -5,9 +5,16 @@ import (
 	"io"
 	"io/ioutil"
 
+	//~ "github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings/middleware"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings/view"
 )
+
+//~ var log = logger.New("settings")
+
+type Section interface {
+	ID() string
+}
 
 type Settings struct {
 	ViewList       []*view.Settings       `json:"View"`
@@ -16,13 +23,13 @@ type Settings struct {
 
 func New(filename string) (*Settings, error) {
 	s := &Settings{}
-	if err := s.readFile(filename); err != nil {
+	if err := readFile(s, filename); err != nil {
 		return nil, err
 	}
 	return s, nil
 }
 
-func (s *Settings) readFile(filename string) error {
+func readFile(s *Settings, filename string) error {
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil && err != io.EOF {
 		return err
