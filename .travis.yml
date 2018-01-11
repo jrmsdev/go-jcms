@@ -13,4 +13,4 @@ install:
   - go build ./lib/jcms
 
 script:
-  - go test ./lib/internal/... ./lib/jcms
+  - go test ./lib/...
