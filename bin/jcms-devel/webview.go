@@ -23,7 +23,7 @@ func Webview(req string) {
 	}()
 	uri.Path = req
 	log.D("open %s", uri.String())
-	xwv.Open("jcms-devel", uri.String(),
+	xwv.Open("JCMS Devel", uri.String(),
 		webviewWidth, webviewHeight, webviewResize)
 	jcms.Stop()
 }

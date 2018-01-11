@@ -15,9 +15,6 @@ import (
 
 	// init doctype engines
 	_ "github.com/jrmsdev/go-jcms/lib/internal/doctype/base/loader"
-
-	// init middleware packages
-	_ "github.com/jrmsdev/go-jcms/lib/internal/middleware/base/loader"
 )
 
 var log = logger.New("app")
@@ -101,6 +98,5 @@ func doctypeEngine(
 		return resp.SetError(ctx,
 			http.StatusInternalServerError, err.Error())
 	}
-	log.D("view engine %s", eng.String())
 	return eng.Handle(ctx, resp, req, cfg)
 }

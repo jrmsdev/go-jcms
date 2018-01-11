@@ -2,20 +2,28 @@
 	"Title": "JCMS Devel",
 	"View": [
 		{
-			"path": "/",
-			"name": "home",
-			"useview": "realhome"
+			"Path": "/",
+			"Name": "home",
+			"UseView": "realhome"
 		},
 		{
-			"path": "/home",
-			"name": "realhome",
-			"doctype": "text"
+			"Path": "/home",
+			"Name": "realhome",
+			"Doctype": "text"
 		},
 		{
-			"path": "/favicon.ico",
-			"location": "/static/favicon.ico",
-			"name": "favicon",
-			"redirect": "permanent"
+			"Path": "/favicon.ico",
+			"Location": "/static/favicon.ico",
+			"Name": "favicon",
+			"Redirect": "permanent"
+		}
+	],
+	"Middleware": [
+		{
+			"Name": "setheader",
+			"Args": {
+				"X-Jcms": "YEAH!!"
+			}
 		}
 	]
 }

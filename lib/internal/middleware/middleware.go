@@ -50,6 +50,7 @@ func Action(
 	action MiddlewareAction,
 ) context.Context {
 	for _, mw := range mwreg.GetAll(action) {
+		log.D("%s %s", action.String(), mw.Name())
 		cfg.SetMiddleware(mw.Name())
 		ctx = mw.Action(ctx, resp, req, cfg, action)
 		if appctx.Failed(ctx) {

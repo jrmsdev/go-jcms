@@ -14,7 +14,7 @@ const jcmsid = "middleware.setheader"
 
 var log = logger.New(jcmsid)
 
-func init() {
+func Init() {
 	middleware.Register(&Middleware{}, middleware.ACTION_POST)
 }
 
@@ -27,10 +27,22 @@ func (m *Middleware) Name() string {
 func (m *Middleware) Action(
 	ctx context.Context,
 	resp *response.Response,
-	req *http.Request,
+	_ *http.Request,
 	cfg *settings.Reader,
 	action middleware.MiddlewareAction,
 ) context.Context {
-	// TODO: setheader middleware Action
+	if action == middleware.ACTION_PRE {
+		return ctx
+	}
+	// global headers
+	args := cfg.Middleware.Args
+	for k, v := range args.GetAll("") {
+		resp.SetHeader(k, v.String())
+	}
+	// view headers
+	vargs := cfg.View.Args
+	for k, v := range vargs.GetAll("") {
+		resp.SetHeader(k, v.String())
+	}
 	return ctx
 }

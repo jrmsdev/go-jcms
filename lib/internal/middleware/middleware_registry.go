@@ -30,6 +30,7 @@ func (r *mwRegistry) Register(mw Middleware, actions ...MiddlewareAction) {
 		return
 	}
 	for _, act := range actions {
+		log.D("register %s %s", mw.Name(), act.String())
 		r.actiondb[act] = append(r.actiondb[act], name)
 	}
 	r.db[name] = mw
@@ -69,11 +70,11 @@ func (r *mwRegistry) GetAll(action MiddlewareAction) []Middleware {
 	for _, name := range r.enable[action] {
 		_, ok := added[name]
 		if ok {
-			l = append(l, r.db[name])
-			added[name] = true
-		} else {
 			log.E("ignoring duplicate '%s' for action '%s'",
 				name, action)
+		} else {
+			l = append(l, r.db[name])
+			added[name] = true
 		}
 	}
 	return l

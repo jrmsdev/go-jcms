@@ -10,6 +10,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
+	mwloader "github.com/jrmsdev/go-jcms/lib/internal/middleware/base/loader"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
@@ -25,7 +26,7 @@ func Start() {
 		errHandler(err)
 		return
 	}
-	// TODO: cfg.Validate()?
+	// TODO: s.Validate()?
 	// app
 	var a *app.App
 	a, err = app.New(name, s)
@@ -33,6 +34,8 @@ func Start() {
 		errHandler(err)
 		return
 	}
+	// middleware loader
+	mwloader.Init()
 	// middleware enable
 	if err = middleware.Enable(s.MiddlewareList); err != nil {
 		errHandler(err)
