@@ -11,7 +11,7 @@ import (
 var loglevel string
 
 func init() {
-	flag.StringVar(&loglevel, "log", "verbose", "set log `level`")
+	flag.StringVar(&loglevel, "log", "error", "set log `level`")
 }
 
 func main() {
