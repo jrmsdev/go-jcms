@@ -17,11 +17,11 @@ func TestArgs(t *testing.T) {
 
 func testGet(t *testing.T, a *Args) {
 	v := a.Get("arg0", "GETERROR")
-	if v != "val0" {
+	if v.String() != "val0" {
 		t.Error("invalid arg value for arg0:", v)
 	}
 	v = a.Get("arg", "DEFVAL")
-	if v != "DEFVAL" {
+	if v.String() != "DEFVAL" {
 		t.Error("invalid arg default value:", v)
 	}
 }
@@ -29,15 +29,15 @@ func testGet(t *testing.T, a *Args) {
 func testPrefix(t *testing.T, a *Args) {
 	a.SetPrefix("testing.prefix")
 	v := a.Get("arg0", "GETERROR")
-	if v != "val0" {
+	if v.String() != "val0" {
 		t.Error("invalid arg value for arg0:", v)
 	}
 	v = a.Get("arg", "DEFVAL")
-	if v != "DEFVAL" {
+	if v.String() != "DEFVAL" {
 		t.Error("invalid arg default value:", v)
 	}
 	v = a.Get("arg1", "NOTFOUND")
-	if v != "NOTFOUND" {
+	if v.String() != "NOTFOUND" {
 		t.Error("prefixed arg1 key should be not found:", v)
 	}
 	a.SetPrefix("")
