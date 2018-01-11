@@ -1,3 +1,5 @@
+//go:generate stringer -type MiddlewareAction
+
 package middleware
 
 import (
