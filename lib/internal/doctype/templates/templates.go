@@ -7,8 +7,8 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/base"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
-	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/request"
+	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 )
 
