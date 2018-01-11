@@ -19,7 +19,7 @@ const (
 )
 
 const defaultLevel = WARNING
-const timefmt = "02/Jan/2006:15:04:05 -0700"
+const timefmt = "02/Jan/2006:15:04:05.000 -0700"
 
 var outfh *os.File
 var curlevel = defaultLevel
