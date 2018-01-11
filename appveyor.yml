@@ -31,7 +31,9 @@ install:
   - gcc --version
 
 build_script:
-  - time go build ./lib/jcms
+  - echo %time%
+  - go build ./lib/jcms
+  - echo %time%
 
 test_script:
-  - time go test ./lib/...
+  - timeit go test ./lib/...
