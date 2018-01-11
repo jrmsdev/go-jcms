@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "uz1iM04puz1Wp6w2WQK5AipaFCY=",
+			"path": "github.com/zserge/webview",
+			"revision": "705c58300c7db1d1aca3dc5b8b448df33fc58efe",
+			"revisionTime": "2018-01-09T11:48:25Z"
+		}
+	],
+	"rootPath": "github.com/jrmsdev/go-jcms"
+}
