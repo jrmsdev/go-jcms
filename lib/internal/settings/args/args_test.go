@@ -7,8 +7,8 @@ import (
 func TestArgs(t *testing.T) {
 	a := &Args{}
 	a.Args = map[string]string{
-		"arg0": "val0",
-		"arg1": "val1",
+		"arg0":                "val0",
+		"arg1":                "val1",
 		"testing.prefix.arg0": "val0",
 	}
 	testGet(t, a)
