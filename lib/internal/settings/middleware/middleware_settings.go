@@ -7,7 +7,7 @@ import (
 )
 
 type Settings struct {
-	Name    string
+	Name string
 	args.Args
 }
 

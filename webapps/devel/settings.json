@@ -1,0 +1,21 @@
+{
+	"Title": "JCMS Devel",
+	"View": [
+		{
+			"path": "/",
+			"name": "home",
+			"useview": "realhome"
+		},
+		{
+			"path": "/home",
+			"name": "realhome",
+			"doctype": "text"
+		},
+		{
+			"path": "/favicon.ico",
+			"location": "/static/favicon.ico",
+			"name": "favicon",
+			"redirect": "permanent"
+		}
+	]
+}

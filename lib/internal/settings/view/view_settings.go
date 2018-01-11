@@ -7,12 +7,12 @@ import (
 )
 
 type Settings struct {
-	Name string
-	Path string
-	Doctype string
+	Name     string
+	Path     string
+	Doctype  string
 	Redirect string
 	Location string
-	UseView string
+	UseView  string
 	args.Args
 }
 

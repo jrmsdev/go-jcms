@@ -9,9 +9,9 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
+	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
-	"github.com/jrmsdev/go-jcms/lib/internal/middleware"
 )
 
 var log = logger.New("webapps")

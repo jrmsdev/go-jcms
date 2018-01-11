@@ -24,7 +24,7 @@ func WebappDir() string {
 }
 
 func SettingsFile() string {
-	return absPath(fp.Join(WebappDir(), "settings.xml"))
+	return absPath(fp.Join(WebappDir(), "settings.json"))
 }
 
 func DataDir() string {

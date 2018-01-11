@@ -11,6 +11,7 @@ import (
 )
 
 const jcmsid = "middleware.setheader"
+
 var log = logger.New(jcmsid)
 
 func init() {

@@ -23,8 +23,8 @@ import (
 var log = logger.New("app")
 
 type App struct {
-	name string
-	vreg *views.Registry
+	name     string
+	vreg     *views.Registry
 	settings *settings.Settings
 }
 
