@@ -6,7 +6,7 @@ import (
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
-	"github.com/jrmsdev/go-jcms/lib/internal/doctype/testing/testeng"
+	"github.com/jrmsdev/go-jcms/lib/internal/testing/testeng"
 )
 
 const testengName = "skel"
