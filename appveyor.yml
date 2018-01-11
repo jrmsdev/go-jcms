@@ -36,4 +36,6 @@ build_script:
   - echo %time%
 
 test_script:
-  - timeit go test ./lib/...
+  - echo %time%
+  - go test ./lib/...
+  - echo %time%
