@@ -32,22 +32,22 @@ func Register(vlist []*view.Settings) *Registry {
 func (r *Registry) Get(path string) (*view.Settings, error) {
 	idx, found := r.idx[path]
 	if !found {
-		log.E("not found: %s", path)
-		return nil, fmt.Errorf("not found: %s", path)
+		log.E("not found %s", path)
+		return nil, fmt.Errorf("not found %s", path)
 	}
 	v := r.db[idx]
 	if v.UseView != "" {
-		return r.useView(path, v.UseView)
+		return r.useView(v.Name, path, v.UseView)
 	}
 	return v, nil
 }
 
-func (r *Registry) useView(path, name string) (*view.Settings, error) {
-	log.D("useview: %s", name)
+func (r *Registry) useView(src, path, name string) (*view.Settings, error) {
+	log.D("%s useview %s", src, name)
 	v, found := r.db[name]
 	if !found {
-		log.E("useview not found: %s", name)
-		return nil, fmt.Errorf("not found: %s", path)
+		log.E("useview not found %s", name)
+		return nil, fmt.Errorf("not found %s", path)
 	}
 	return v, nil
 }

@@ -18,7 +18,7 @@ var log = logger.New("webapps")
 
 func Start() {
 	name := env.WebappName()
-	log.D("start: %s", name)
+	log.D("start %s", name)
 	// read settings
 	s, err := settings.New(env.SettingsFile())
 	if err != nil {
@@ -44,7 +44,7 @@ func Start() {
 }
 
 func staticHandler(a *app.App) {
-	log.D("static handler: %s", a)
+	log.D("static handler %s", a)
 	staticdir := filepath.Join(env.WebappDir(), "static")
 	httpd.Handle("/static/",
 		http.StripPrefix("/static/",
@@ -52,7 +52,7 @@ func staticHandler(a *app.App) {
 }
 
 func mainHandler(a *app.App) {
-	log.D("main handler: %s", a)
+	log.D("main handler %s", a)
 	httpd.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := appctx.New()
 		defer cancel()
@@ -103,7 +103,7 @@ func writeResp(w http.ResponseWriter, resp *response.Response) {
 	log.D("write response")
 	sent, err := w.Write(resp.Body())
 	if err != nil {
-		log.Panic("write response: %s", err)
+		log.E("write response %s", err)
 	}
-	log.D("response sent: %d", sent)
+	log.D("response sent %d", sent)
 }

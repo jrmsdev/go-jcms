@@ -95,12 +95,12 @@ func doctypeEngine(
 	req *http.Request,
 	cfg *settings.Reader,
 ) context.Context {
-	log.D("view doctype", cfg.View.Doctype)
+	log.D("view doctype %s", cfg.View.Doctype)
 	eng, err := doctype.GetEngine(cfg.View.Doctype)
 	if err != nil {
 		return resp.SetError(ctx,
 			http.StatusInternalServerError, err.Error())
 	}
-	log.D("view engine: %s", eng.String())
+	log.D("view engine %s", eng.String())
 	return eng.Handle(ctx, resp, req, cfg)
 }
