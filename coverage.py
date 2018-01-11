@@ -8,44 +8,46 @@ from tempfile import mkstemp
 from subprocess import check_output, check_call, CalledProcessError
 
 GOPATH = os.getenv ('GOPATH')
+DOCROOT = path.abspath(path.join ('.', 'htmlcov'))
+INDEX_FN = path.join(DOCROOT, 'index.html')
 
 HTML_HEAD = '''
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<style>
-			body {
-				background: black;
-				color: rgb(80, 80, 80);
-			}
-			body, pre, #legend span {
-				font-family: Menlo, monospace;
-				font-weight: bold;
-			}
-			#topbar {
-				background: black;
-				position: fixed;
-				top: 0; left: 0; right: 0;
-				height: 42px;
-				border-bottom: 1px solid rgb(80, 80, 80);
-			}
-			#content {
-				margin-top: 50px;
-			}
-			#nav, #legend {
-				float: left;
-				margin-left: 10px;
-			}
-			#legend {
-				margin-top: 12px;
-			}
-			#nav {
-				margin-top: 10px;
-			}
-			#legend span {
-				margin: 0 5px;
-			}
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <style>
+            body {
+                background: black;
+                color: rgb(80, 80, 80);
+            }
+            body, pre, #legend span {
+                font-family: Menlo, monospace;
+                font-weight: bold;
+            }
+            #topbar {
+                background: black;
+                position: fixed;
+                top: 0; left: 0; right: 0;
+                height: 42px;
+                border-bottom: 1px solid rgb(80, 80, 80);
+            }
+            #content {
+                margin-top: 50px;
+            }
+            #nav, #legend {
+                float: left;
+                margin-left: 10px;
+            }
+            #legend {
+                margin-top: 12px;
+            }
+            #nav {
+                margin-top: 10px;
+            }
+            #legend span {
+                margin: 0 5px;
+            }
             .cov0 { color: rgb(192, 0, 0) }
             .cov1 { color: rgb(128, 128, 128) }
             .cov2 { color: rgb(116, 140, 131) }
@@ -59,8 +61,8 @@ HTML_HEAD = '''
             .cov10 { color: rgb(20, 236, 155) }
         </style>
         <title>JCMS Tests Coverage</title>
-	</head>
-	<body>
+    </head>
+    <body>
         <div id="content">
             <table>
 '''
@@ -110,7 +112,11 @@ def testcover (pkg):
         coverr (pkg)
         return
     if path.isfile ('coverage.out'):
-        check_call ('go tool cover -html coverage.out -o coverage.html'.split ())
+        covdocroot = path.join(DOCROOT, pkg)
+        covfilename = path.join(covdocroot, 'coverage.html')
+        os.makedirs(covdocroot, exist_ok = True)
+        cmd = 'go tool cover -html coverage.out -o {}'.format(covfilename)
+        check_call (cmd.split ())
         covdone (pkg, outfn)
     else:
         covmiss (pkg)
@@ -129,7 +135,7 @@ COVDONE = '''
 '''
 
 def covdone (pkg, outfn):
-    href = path.join (GOPATH, 'src', pkg, 'coverage.html')
+    href = path.join (DOCROOT, pkg, 'coverage.html')
     covinfo = ''
     fh = open (outfn, 'r')
     for line in [l.strip () for l in fh.readlines ()]:
@@ -140,10 +146,10 @@ def covdone (pkg, outfn):
     covp = int(covinfo.strip().split()[1].split('.')[0])
     covlevel = int(covp / 10)
     print (COVDONE.format (
-	    href = href,
-	    pkg = pkg,
-	    covinfo = covinfo,
-	    covlevel = covlevel,
+        href = href,
+        pkg = pkg,
+        covinfo = covinfo,
+        covlevel = covlevel,
     ), file = INDEX_FH)
 
 def covmiss (pkg):
@@ -154,7 +160,8 @@ def coverr (pkg):
 
 if __name__ == '__main__':
     global INDEX_FH
-    INDEX_FH = open ('coverage.html', 'w')
+    os.makedirs (DOCROOT, exist_ok = True)
+    INDEX_FH = open (INDEX_FN, 'w')
     print (HTML_HEAD, file = INDEX_FH)
     if len (sys.argv) < 2:
         for pkg in check_output(['go', 'list', './...']).decode().splitlines():
@@ -164,4 +171,5 @@ if __name__ == '__main__':
     now = asctime ()
     print (HTML_TAIL.format (now), file = INDEX_FH)
     INDEX_FH.close ()
+    print (INDEX_FN)
     sys.exit (0)
