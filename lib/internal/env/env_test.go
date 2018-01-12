@@ -6,6 +6,12 @@ import (
 	"testing"
 )
 
+func init() {
+	os.Setenv("JCMS_WEBAPP", webapp)
+	os.Setenv("JCMS_BASEDIR", filepath.FromSlash(basedir))
+	os.Setenv("JCMS_DATADIR", filepath.FromSlash(datadir))
+}
+
 func TestWebappName(t *testing.T) {
 	n := WebappName()
 	if n != "default" {
