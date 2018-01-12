@@ -113,7 +113,7 @@ func tplHandle(
 		viewtpl *template.Template
 	)
 	// parse main template
-	maintpl, err = parseMainTpl(maintplfn)
+	maintpl, err = parseMainTpl(docroot, maintplfn)
 	if err != nil {
 		log.E("parse main template: %s", err.Error())
 		return resp.SetError(ctx, http.StatusInternalServerError,
@@ -168,12 +168,13 @@ func getViewTpl(
 	return filename, true
 }
 
-func parseMainTpl(fn string) (*template.Template, error) {
+func parseMainTpl(docroot, fn string) (*template.Template, error) {
 	content, err := ioutil.ReadFile(fn)
 	if err != nil {
 		return nil, err
 	}
-	return template.New("maintpl").Funcs(funcs.Map).Parse(string(content))
+	name := tplName(docroot, fn)
+	return template.New(name).Funcs(funcs.Map).Parse(string(content))
 }
 
 func parseViewTpl(main *template.Template, fn string) (*template.Template, error) {
