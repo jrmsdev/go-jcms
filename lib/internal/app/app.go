@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
+	dbm "github.com/jrmsdev/go-jcms/lib/internal/db"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
@@ -16,6 +17,9 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
 	"github.com/jrmsdev/go-jcms/lib/internal/views"
+
+	// init db engines
+	_ "github.com/jrmsdev/go-jcms/lib/internal/db/loader"
 
 	// init doctype engines
 	_ "github.com/jrmsdev/go-jcms/lib/internal/doctype/base/loader"
@@ -44,6 +48,13 @@ func (a *App) Handle(
 	resp *response.Response,
 	req *request.Request,
 ) context.Context {
+	// TODO: connect to database
+	_, dberr := dbm.Open("memdb://jcmsdb")
+	if dberr != nil {
+		log.E("db open %s", dberr.Error())
+		return resp.SetError(ctx, http.StatusInternalServerError,
+			"ERROR: database connection")
+	}
 	// view handler
 	view, err := a.vreg.Get(req.URL.Path)
 	if err != nil {
