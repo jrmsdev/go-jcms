@@ -45,14 +45,16 @@ func (e *engine) Handle(
 		viewtplfn string
 	)
 	log.D("docroot %s", docroot)
+	args := cfg.View.Args
 	// get template files
-	maintplfn, ok = getMainTpl(cfg, docroot, "main")
+	layout := args.Get("layout", "main").String()
+	maintplfn, ok = getMainTpl(cfg, docroot, layout)
 	if !ok {
 		log.E("main template not found: %s", maintplfn)
 		return resp.SetError(ctx, http.StatusInternalServerError,
 			"main template not found")
 	}
-	viewtplfn, ok = getViewTpl(cfg, req, docroot)
+	viewtplfn, ok = getViewTpl(cfg, req, docroot, req.URL.Path)
 	if !ok {
 		log.E("view template not found: %s", viewtplfn)
 		return resp.SetError(ctx, http.StatusNotFound, "not found")
@@ -70,16 +72,28 @@ func (e *engine) HandleError(
 	cfg *settings.Reader,
 	docroot string,
 ) context.Context {
-	// get error template
-	maintplfn, ok := getMainTpl(cfg, docroot, "error")
+	var (
+		ok        bool
+		maintplfn string
+		viewtplfn string
+	)
+	// get error templates
+	maintplfn, ok = getMainTpl(cfg, docroot, "error")
 	if !ok {
-		log.E("error template not found: %s", maintplfn)
+		log.E("error layout not found: %s", maintplfn)
 		return resp.SetError(ctx, http.StatusInternalServerError,
+			"error layout not found")
+	}
+	viewtplfn, ok = getViewTpl(cfg, req, docroot, "error")
+	if !ok {
+		log.E("error template not found: %s", viewtplfn)
+		return resp.SetError(ctx, http.StatusNotFound,
 			"error template not found")
 	}
 	// templates data
 	tpldata := newErrorData()
-	return tplHandle(ctx, resp, req, cfg, docroot, maintplfn, "", tpldata)
+	return tplHandle(ctx, resp, req, cfg, docroot,
+		maintplfn, viewtplfn, tpldata)
 }
 
 func tplHandle(
@@ -114,27 +128,16 @@ func tplHandle(
 				"ERROR: parse view template")
 		}
 	}
-	// execute main template
-	tplname = tplName(docroot, maintplfn)
-	resp.SetTemplateLayout(tplname)
-	log.D("exec main %s", tplname)
-	err = maintpl.Execute(resp, tpldata)
+	// execute template
+	resp.SetTemplateLayout(tplName(docroot, maintplfn))
+	tplname = tplName(docroot, viewtplfn)
+	resp.SetTemplate(tplname)
+	log.D("exec %s", tplname)
+	err = viewtpl.Execute(resp, tpldata)
 	if err != nil {
-		log.E("exec main template: %s", err.Error())
+		log.E("exec template: %s", err.Error())
 		return resp.SetError(ctx, http.StatusInternalServerError,
-			"ERROR: exec main template")
-	}
-	// execute view template (if provided)
-	if viewtplfn != "" {
-		tplname = tplName(docroot, viewtplfn)
-		resp.SetTemplate(tplname)
-		log.D("exec view %s", tplname)
-		err = viewtpl.Execute(resp, tpldata)
-		if err != nil {
-			log.E("exec view template: %s", err.Error())
-			return resp.SetError(ctx, http.StatusInternalServerError,
-				"ERROR: exec view template")
-		}
+			"ERROR: exec template")
 	}
 	resp.SetStatus(http.StatusOK)
 	return ctx
@@ -152,15 +155,13 @@ func getViewTpl(
 	cfg *settings.Reader,
 	req *request.Request,
 	docroot string,
+	fn string,
 ) (string, bool) {
-	fn := req.URL.Path
-	if fn == "" || fn == "/" {
-		fn = path.Clean(cfg.View.Path)
-	}
+	fn = path.Clean(fn)
 	if fn == "" || fn == "/" {
 		fn = "index"
 	}
-	filename := filepath.Join(docroot, fn+".html")
+	filename := filepath.Clean(filepath.Join(docroot, fn+".html"))
 	if !fsutils.FileExists(filename) {
 		return filename, false
 	}
