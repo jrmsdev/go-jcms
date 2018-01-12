@@ -117,7 +117,7 @@ func tplHandle(
 	// execute main template
 	tplname = tplName(docroot, maintplfn)
 	resp.SetTemplateLayout(tplname)
-	log.D("exec main", tplname)
+	log.D("exec main %s", tplname)
 	err = execTpl(resp, maintpl, tpldata)
 	if err != nil {
 		log.E("exec main template: %s", err.Error())
@@ -128,7 +128,7 @@ func tplHandle(
 	if viewtplfn != "" {
 		tplname = tplName(docroot, viewtplfn)
 		resp.SetTemplate(tplname)
-		log.D("exec view", tplname)
+		log.D("exec view %s", tplname)
 		err = execTpl(resp, viewtpl, tpldata)
 		if err != nil {
 			log.E("exec view template: %s", err.Error())

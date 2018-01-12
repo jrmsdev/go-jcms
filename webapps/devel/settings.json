@@ -5,12 +5,7 @@
 		{
 			"Path": "/",
 			"Name": "home",
-			"UseView": "realhome"
-		},
-		{
-			"Path": "/home",
-			"Name": "realhome",
-			"Doctype": "text"
+			"Doctype": "templates"
 		},
 		{
 			"Path": "/favicon.ico",
@@ -23,7 +18,7 @@
 		{
 			"Name": "setheader",
 			"Args": {
-				"X-Jcms": "YEAH!!"
+				"X-Jcms": "devel"
 			}
 		}
 	]
