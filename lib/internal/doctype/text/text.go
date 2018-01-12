@@ -35,6 +35,16 @@ func newEngine() *engine {
 	return &engine{base.New("text")}
 }
 
+func (e *engine) HandleError(
+	ctx context.Context,
+	resp *response.Response,
+	_ *request.Request,
+	_ *settings.Reader,
+	_ string,
+) context.Context {
+	return resp.SetError(ctx, resp.Status(), resp.Error())
+}
+
 func (e *engine) Handle(
 	ctx context.Context,
 	resp *response.Response,

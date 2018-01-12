@@ -62,7 +62,7 @@ func (a *App) Handle(
 	}
 	// doctype engine
 	ctx = doctypeEngine(ctx, resp, req, cfg)
-	if appctx.Failed(ctx) {
+	if appctx.Failed(ctx) || appctx.EngineFailed(ctx) {
 		return ctx
 	}
 	// middleware POST
@@ -109,5 +109,10 @@ func doctypeEngine(
 			http.StatusInternalServerError, "docroot not found")
 	}
 	log.D("%s handle", eng)
-	return eng.Handle(ctx, resp, req, cfg, docroot)
+	ctx = eng.Handle(ctx, resp, req, cfg, docroot)
+	if appctx.Failed(ctx) {
+		ctx = appctx.EngineFail(ctx)
+		return eng.HandleError(ctx, resp, req, cfg, docroot)
+	}
+	return ctx
 }

@@ -13,4 +13,6 @@ type Engine interface {
 	String() string
 	Handle(context.Context, *response.Response, *request.Request,
 		*settings.Reader, string) context.Context
+	HandleError(context.Context, *response.Response, *request.Request,
+		*settings.Reader, string) context.Context
 }

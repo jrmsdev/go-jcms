@@ -28,6 +28,16 @@ func (e *testEngine) Handle(
 	return ctx
 }
 
+func (e *testEngine) HandleError(
+	ctx context.Context,
+	_ *response.Response,
+	_ *request.Request,
+	_ *settings.Reader,
+	_ string,
+) context.Context {
+	return ctx
+}
+
 func TestRegister(t *testing.T) {
 	Register("testengine", newTestEngine())
 	e, err := GetEngine("testengine")
