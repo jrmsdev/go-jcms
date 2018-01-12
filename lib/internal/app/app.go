@@ -53,7 +53,7 @@ func (a *App) Handle(
 	cfg := settings.NewReader(a.settings, view)
 	// view redirect
 	if view.Redirect != "" {
-		return respRedirect(ctx, resp, cfg)
+		return viewRedirect(ctx, resp, cfg)
 	}
 	// middleware PRE
 	ctx = middleware.Action(ctx, resp, req, cfg, middleware.ACTION_PRE)
@@ -69,7 +69,7 @@ func (a *App) Handle(
 	return middleware.Action(ctx, resp, req, cfg, middleware.ACTION_POST)
 }
 
-func respRedirect(
+func viewRedirect(
 	ctx context.Context,
 	resp *response.Response,
 	cfg *settings.Reader,

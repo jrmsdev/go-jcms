@@ -10,22 +10,26 @@ import (
 )
 
 type Response struct {
-	buf      bytes.Buffer
-	body     io.Writer
-	size     int
-	status   int
-	errmsg   string
-	headers  map[string]string
-	location string
+	buf       bytes.Buffer
+	body      io.Writer
+	size      int
+	status    int
+	errmsg    string
+	headers   map[string]string
+	location  string
+	template  string
+	tpllayout string
 }
 
 func New() *Response {
 	r := &Response{
-		size:     0,
-		status:   http.StatusNotImplemented,
-		errmsg:   "NOERRMSG",
-		headers:  make(map[string]string),
-		location: "NOLOCATION",
+		size:      0,
+		status:    http.StatusNotImplemented,
+		errmsg:    "NOERRMSG",
+		headers:   make(map[string]string),
+		location:  "NOLOCATION",
+		template:  "",
+		tpllayout: "",
 	}
 	r.body = io.MultiWriter(&r.buf)
 	return r
@@ -46,7 +50,7 @@ func (r *Response) SetError(
 ) context.Context {
 	r.status = status
 	r.errmsg = msg
-	// TODO: resp SetError should call r.buf.Reset() for cleanup?
+	r.buf.Reset()
 	return appctx.Fail(ctx)
 }
 
@@ -84,4 +88,20 @@ func (r *Response) Redirect(
 	r.status = status
 	r.location = location
 	return appctx.SetRedirect(ctx)
+}
+
+func (r *Response) Template() string {
+	return r.template
+}
+
+func (r *Response) SetTemplate(name string) {
+	r.template = name
+}
+
+func (r *Response) TemplateLayout() string {
+	return r.tpllayout
+}
+
+func (r *Response) SetTemplateLayout(name string) {
+	r.tpllayout = name
 }

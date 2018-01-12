@@ -21,13 +21,30 @@ func TestEngine(t *testing.T) {
 	}
 }
 
+func getResult(t *testing.T, path string) *testeng.Result {
+	return testeng.Handle(t, testengName,
+		&testeng.Query{
+			App:  testengName,
+			Path: path,
+		})
+}
+
 func TestHandle(t *testing.T) {
-	r := testeng.Handle(t, testengName, &testeng.Query{})
+	r := getResult(t, "/test")
 	if appctx.Failed(r.Ctx) {
 		t.Error("handle context should not fail:", r.Resp.Error())
 	}
 	status := r.Resp.Status()
 	if status != http.StatusOK {
 		t.Error("invalid resp status:", status)
+		t.Log("expect:", http.StatusOK)
+	}
+	if r.Resp.Template() != "test.html" {
+		t.Error("invalid resp template:", r.Resp.Template())
+		t.Log("expect: test.html")
+	}
+	if r.Resp.TemplateLayout() != "main.tpl" {
+		t.Error("invalid resp template layout:", r.Resp.TemplateLayout())
+		t.Log("expect: main.tpl")
 	}
 }

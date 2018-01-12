@@ -1,0 +1,11 @@
+{
+	"Title": "JCMS Templates Tests",
+	"Theme": "devel",
+	"View": [
+		{
+			"Path": "/test",
+			"Name": "test",
+			"Doctype": "templates"
+		}
+	]
+}
