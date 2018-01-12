@@ -118,7 +118,7 @@ func tplHandle(
 	tplname = tplName(docroot, maintplfn)
 	resp.SetTemplateLayout(tplname)
 	log.D("exec main %s", tplname)
-	err = execTpl(resp, maintpl, tpldata)
+	err = maintpl.Execute(resp, tpldata)
 	if err != nil {
 		log.E("exec main template: %s", err.Error())
 		return resp.SetError(ctx, http.StatusInternalServerError,
@@ -129,7 +129,7 @@ func tplHandle(
 		tplname = tplName(docroot, viewtplfn)
 		resp.SetTemplate(tplname)
 		log.D("exec view %s", tplname)
-		err = execTpl(resp, viewtpl, tpldata)
+		err = viewtpl.Execute(resp, tpldata)
 		if err != nil {
 			log.E("exec view template: %s", err.Error())
 			return resp.SetError(ctx, http.StatusInternalServerError,
@@ -189,12 +189,4 @@ func tplName(docroot, filename string) string {
 		n = "ERROR:" + err.Error()
 	}
 	return n
-}
-
-func execTpl(
-	resp *response.Response,
-	tpl *template.Template,
-	data *Data,
-) error {
-	return tpl.Execute(resp, data)
 }
