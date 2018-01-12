@@ -46,9 +46,10 @@ func Start() {
 }
 
 func errHandler(err error) {
+	status := http.StatusInternalServerError
+	log.D("response status: %d", status)
 	httpd.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		log.E("INTERNAL ERROR: %s", err)
-		http.Error(w, "INTERNAL ERROR: "+err.Error(),
-			http.StatusInternalServerError)
+		http.Error(w, "INTERNAL ERROR: "+err.Error(), status)
 	})
 }

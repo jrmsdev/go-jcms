@@ -48,29 +48,29 @@ func (e *engine) Handle(
 		maintpl   *template.Template
 		viewtpl   *template.Template
 	)
-	log.D("docroot", docroot)
+	log.D("docroot %s", docroot)
 	// get template files
 	maintplfn, ok = getMainTpl(cfg, docroot)
 	if !ok {
-		log.E("main template not found:", maintplfn)
+		log.E("main template not found: %s", maintplfn)
 		return resp.SetError(ctx, http.StatusInternalServerError,
 			"main template not found")
 	}
 	viewtplfn, ok = getViewTpl(cfg, req, docroot)
 	if !ok {
-		log.E("view template not found:", viewtplfn)
+		log.E("view template not found: %s", viewtplfn)
 		return resp.SetError(ctx, http.StatusNotFound, "not found")
 	}
 	// parse templates
 	maintpl, err = parseMainTpl(maintplfn)
 	if err != nil {
-		log.E("parse main template:", err.Error())
+		log.E("parse main template: %s", err.Error())
 		return resp.SetError(ctx, http.StatusInternalServerError,
 			"ERROR: parse main template")
 	}
 	viewtpl, err = parseViewTpl(maintpl, viewtplfn)
 	if err != nil {
-		log.E("parse view template:", err.Error())
+		log.E("parse view template: %s", err.Error())
 		return resp.SetError(ctx, http.StatusInternalServerError,
 			"ERROR: parse view template")
 	}
@@ -82,7 +82,7 @@ func (e *engine) Handle(
 	log.D("exec main", tplname)
 	err = execTpl(resp, maintpl, tpldata)
 	if err != nil {
-		log.E("exec main template:", err.Error())
+		log.E("exec main template: %s", err.Error())
 		return resp.SetError(ctx, http.StatusInternalServerError,
 			"ERROR: exec main template")
 	}
@@ -92,7 +92,7 @@ func (e *engine) Handle(
 	log.D("exec view", tplname)
 	err = execTpl(resp, viewtpl, tpldata)
 	if err != nil {
-		log.E("exec view template:", err.Error())
+		log.E("exec view template: %s", err.Error())
 		return resp.SetError(ctx, http.StatusInternalServerError,
 			"ERROR: exec view template")
 	}

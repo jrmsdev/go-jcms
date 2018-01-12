@@ -33,6 +33,7 @@ func Handle(a *app.App) {
 }
 
 func respError(w http.ResponseWriter, resp *response.Response) {
+	log.D("response status %d", resp.Status())
 	http.Error(w, "ERROR: "+resp.Error(), resp.Status())
 }
 
@@ -41,6 +42,7 @@ func respRedirect(
 	resp *response.Response,
 	r *http.Request,
 ) {
+	log.D("response status %d", resp.Status())
 	http.Redirect(w, r, resp.Location(), resp.Status())
 }
 
@@ -54,7 +56,7 @@ func respHeaders(w http.ResponseWriter, resp *response.Response) {
 
 func writeResp(w http.ResponseWriter, resp *response.Response) {
 	respHeaders(w, resp)
-	log.D("write response")
+	log.D("response status %d", resp.Status())
 	sent, err := w.Write(resp.Body())
 	if err != nil {
 		log.E("write response %s", err)
