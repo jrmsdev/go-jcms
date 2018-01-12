@@ -6,7 +6,7 @@ import "fmt"
 const (
 	MAJOR = 0
 	MINOR = 0
-	PATCH = 171223
+	PATCH = 0
 )
 
 func String() string {
