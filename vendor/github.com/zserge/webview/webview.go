@@ -15,13 +15,15 @@ package webview
 #cgo linux openbsd freebsd pkg-config: gtk+-3.0 webkit2gtk-4.0
 
 #cgo windows CFLAGS: -DWEBVIEW_WINAPI=1
-#cgo windows LDFLAGS: -lole32 -lcomctl32 -loleaut32 -luuid -mwindows
+#cgo windows LDFLAGS: -lole32 -lcomctl32 -loleaut32 -luuid -lgdi32
 
-#cgo darwin CFLAGS: -DWEBVIEW_COCOA=1 -x objective-c
-#cgo darwin LDFLAGS: -framework Cocoa -framework WebKit
+#cgo darwin CFLAGS: -DWEBVIEW_COCOA=1 
+#cgo darwin LDFLAGS: -framework WebKit
 
 #include <stdlib.h>
 #include <stdint.h>
+#define WEBVIEW_STATIC
+#define WEBVIEW_IMPLEMENTATION
 #include "webview.h"
 
 extern void _webviewExternalInvokeCallback(void *, void *);
@@ -66,6 +68,10 @@ static inline void CgoWebViewSetTitle(void *w, char *title) {
 
 static inline void CgoWebViewSetFullscreen(void *w, int fullscreen) {
 	webview_set_fullscreen((struct webview *)w, fullscreen);
+}
+
+static inline void CgoWebViewSetColor(void *w, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+	webview_set_color((struct webview *)w, r, g, b, a);
 }
 
 static inline void CgoDialog(void *w, int dlgtype, int flags,
@@ -191,9 +197,12 @@ type WebView interface {
 	// SetFullscreen() controls window full-screen mode. This method must be
 	// called from the main thread only. See Dispatch() for more details.
 	SetFullscreen(fullscreen bool)
+	// SetColor() changes window background color. This method must be called from
+	// the main thread only. See Dispatch() for more details.
+	SetColor(r, g, b, a uint8)
 	// Eval() evaluates an arbitrary JS code inside the webview. This method must
 	// be called from the main thread only. See Dispatch() for more details.
-	Eval(js string)
+	Eval(js string) error
 	// InjectJS() injects an arbitrary block of CSS code using the JS API. This
 	// method must be called from the main thread only. See Dispatch() for more
 	// details.
@@ -325,6 +334,10 @@ func (w *webview) SetTitle(title string) {
 	C.CgoWebViewSetTitle(w.w, p)
 }
 
+func (w *webview) SetColor(r, g, b, a uint8) {
+	C.CgoWebViewSetColor(w.w, C.uint8_t(r), C.uint8_t(g), C.uint8_t(b), C.uint8_t(a))
+}
+
 func (w *webview) SetFullscreen(fullscreen bool) {
 	C.CgoWebViewSetFullscreen(w.w, C.int(boolToInt(fullscreen)))
 }
@@ -342,10 +355,14 @@ func (w *webview) Dialog(dlgType DialogType, flags int, title string, arg string
 	return C.GoString(resultPtr)
 }
 
-func (w *webview) Eval(js string) {
+func (w *webview) Eval(js string) error {
 	p := C.CString(js)
 	defer C.free(unsafe.Pointer(p))
-	C.CgoWebViewEval(w.w, p)
+	switch C.CgoWebViewEval(w.w, p) {
+	case -1:
+		return errors.New("evaluation failed")
+	}
+	return nil
 }
 
 func (w *webview) InjectCSS(css string) {
