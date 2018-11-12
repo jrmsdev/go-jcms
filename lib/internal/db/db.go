@@ -6,7 +6,7 @@ import (
 
 var log = logger.New("db")
 
-type Engine interface{
+type Engine interface {
 	Name() string
 	Open()
 	Close()

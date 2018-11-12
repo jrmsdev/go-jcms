@@ -7,6 +7,7 @@ clone_folder: c:\golang\src\github.com\jrmsdev\go-jcms
 environment:
   global:
     GOPATH: C:\golang
+    GOVERSION: 1.x
   matrix:
     - GETH_ARCH: amd64
       GOARCH: amd64

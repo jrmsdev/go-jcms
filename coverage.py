@@ -37,7 +37,7 @@ HTML_HEAD = '''
             .cov9 { color: rgb(32, 224, 152) }
             .cov10 { color: rgb(20, 236, 155) }
         </style>
-        <title>JCMS Tests Coverage</title>
+        <title>gojc tests overage</title>
     </head>
     <body>
         <div id="content">
@@ -140,11 +140,11 @@ if __name__ == '__main__':
     os.makedirs (DOCROOT, exist_ok = True)
     INDEX_FH = open (INDEX_FN, 'w')
     print (HTML_HEAD, file = INDEX_FH)
-    if len (sys.argv) < 2:
-        for pkg in check_output(['go', 'list', './...']).decode().splitlines():
-            testcover (pkg)
-    else:
-        testcover (path.join ('github.com', 'jrmsdev', 'go-jcms', path.relpath (sys.argv[1])))
+    gopatt = './...'
+    if len (sys.argv) == 2:
+        gopatt = path.join ('github.com', 'jrmsdev', 'gojc', sys.argv[1])
+    for pkg in check_output(['go', 'list', gopatt]).decode().splitlines():
+        testcover (pkg)
     now = asctime ()
     print (HTML_TAIL.format (now), file = INDEX_FH)
     INDEX_FH.close ()
