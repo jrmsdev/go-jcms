@@ -14,5 +14,6 @@ type Manager interface {
 }
 
 func ReadFile(name string) ([]byte, error) {
+	checkManager()
 	return manager.ReadFile(name)
 }
