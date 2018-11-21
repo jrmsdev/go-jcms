@@ -3,6 +3,7 @@ package jcms
 import (
 	"os"
 
+	"github.com/jrmsdev/go-jcms/lib/internal/asset"
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/webapps"
@@ -59,4 +60,8 @@ func LogStop() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func SetAssetManager(newmanager asset.Manager) {
+	asset.SetManager(newmanager)
 }
