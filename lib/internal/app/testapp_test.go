@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
-	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
@@ -59,7 +58,7 @@ func (a *testapp) Handle(path string) *testappResult {
 	r := &testappResult{}
 	r.AppName = "testing"
 	r.Err = nil
-	r.Settings, err = settings.New(env.SettingsFile())
+	r.Settings, err = settings.New()
 	if err != nil {
 		r.Err = err
 		return r

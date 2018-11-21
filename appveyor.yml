@@ -33,7 +33,7 @@ install:
 
 build_script:
   - echo %time%
-  - go build ./lib/jcms
+  - go install -i ./lib/... ./bin/jcms
   - echo %time%
 
 test_script:
