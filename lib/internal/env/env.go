@@ -23,8 +23,8 @@ func WebappDir() string {
 	return absPath(fp.Join(baseDir(), WebappName()))
 }
 
-func SettingsFile() string {
-	return absPath(fp.Join(WebappDir(), "settings.json"))
+func WebappFile(name string) string {
+	return absPath(fp.Join(WebappDir(), name))
 }
 
 func DataDir() string {

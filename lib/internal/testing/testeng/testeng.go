@@ -10,7 +10,6 @@ import (
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
-	"github.com/jrmsdev/go-jcms/lib/internal/env"
 	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings"
@@ -99,7 +98,7 @@ func getCfg(
 	path string,
 	dtype string,
 ) (*settings.Reader, error) {
-	s, err := settings.New(env.SettingsFile())
+	s, err := settings.New()
 	if err != nil {
 		return nil, err
 	}

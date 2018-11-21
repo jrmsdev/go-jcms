@@ -3,8 +3,8 @@ package settings
 import (
 	"encoding/json"
 	"io"
-	"io/ioutil"
 
+	"github.com/jrmsdev/go-jcms/lib/internal/asset"
 	//~ "github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings/middleware"
 	"github.com/jrmsdev/go-jcms/lib/internal/settings/view"
@@ -19,16 +19,16 @@ type Settings struct {
 	MiddlewareList []*middleware.Settings `json:"Middleware"`
 }
 
-func New(filename string) (*Settings, error) {
+func New() (*Settings, error) {
 	s := &Settings{}
-	if err := readFile(s, filename); err != nil {
+	if err := readFile(s); err != nil {
 		return nil, err
 	}
 	return s, nil
 }
 
-func readFile(s *Settings, filename string) error {
-	buf, err := ioutil.ReadFile(filename)
+func readFile(s *Settings) error {
+	buf, err := asset.ReadFile("settings.json")
 	if err != nil && err != io.EOF {
 		return err
 	}

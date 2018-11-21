@@ -20,7 +20,7 @@ func Start() {
 	name := env.WebappName()
 	log.D("start %s", name)
 	// read settings
-	s, err := settings.New(env.SettingsFile())
+	s, err := settings.New()
 	if err != nil {
 		errHandler(err)
 		return
