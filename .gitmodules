@@ -1,0 +1,3 @@
+[submodule "vendor/github.com/zserge/webview"]
+	path = vendor/github.com/zserge/webview
+	url = https://github.com/zserge/webview
