@@ -14,10 +14,6 @@ var log = logger.New("jcms")
 var listening = false
 var webappsStarted = false
 
-type AssetFile interface {
-	asset.File
-}
-
 func Listen() string {
 	log.Print("version %s", version.String())
 	uri := httpd.Listen()

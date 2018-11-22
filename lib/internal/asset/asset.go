@@ -2,21 +2,16 @@ package asset
 
 import (
 	"os"
-	"io"
 	"path/filepath"
 
+	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 )
 
 var log = logger.New("asset")
 
-type File interface {
-	io.ReadSeeker
-	io.Closer
-}
-
 type Manager interface {
-	Open(filename string) (File, error)
+	Open(filename string) (api.AssetFile, error)
 	Stat(filename string) (os.FileInfo, error)
 	ReadFile(name string) ([]byte, error)
 }
@@ -28,7 +23,7 @@ func ReadFile(parts ...string) ([]byte, error) {
 	return manager.ReadFile(fn)
 }
 
-func Open(parts ...string) (File, error) {
+func Open(parts ...string) (api.AssetFile, error) {
 	fn := filepath.Join(parts...)
 	log.D("Open %s", fn)
 	checkManager()

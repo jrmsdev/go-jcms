@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	//~ "io/ioutil"
 
+	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 	"github.com/jrmsdev/go-jcms/lib/internal/asset"
 	"github.com/jrmsdev/go-jcms/lib/internal/app"
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
@@ -36,11 +37,11 @@ func (fs fileSystem) Open(name string) (http.File, error) {
 }
 
 type file struct {
-	asset.File
+	api.AssetFile
 	name string
 }
 
-func newFile(fn string, fh asset.File) http.File {
+func newFile(fn string, fh api.AssetFile) http.File {
 	log.D("newFile %s", fn)
 	return &file{fh, fn}
 }

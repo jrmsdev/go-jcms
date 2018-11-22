@@ -4,6 +4,7 @@ import (
 	"os"
 	"io/ioutil"
 
+	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
 )
 
@@ -29,7 +30,7 @@ func SetManager(newmanager Manager) {
 	}
 }
 
-func (m *assetManager) Open(filename string) (File, error) {
+func (m *assetManager) Open(filename string) (api.AssetFile, error) {
 	fn := env.WebappFile(filename)
 	log.D("os Open %s", fn)
 	return os.Open(fn)
