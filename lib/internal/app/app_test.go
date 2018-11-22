@@ -2,24 +2,24 @@ package app
 
 import (
 	"net/http"
-	"strings"
+	//~ "strings"
 	"testing"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
 )
 
-func TestAppHandle(t *testing.T) {
-	tapp := newTestApp()
-	r := tapp.Handle("/test")
-	if appctx.Failed(r.Ctx) {
-		t.Log(r.Resp.Error())
-		t.Error("app.Handle should not fail")
-	}
-	body := strings.TrimSpace(string(r.Resp.Body()))
-	if body != "testing" {
-		t.Error("invalid resp body:", body)
-	}
-}
+//~ func TestAppHandle(t *testing.T) {
+	//~ tapp := newTestApp()
+	//~ r := tapp.Handle("/test")
+	//~ if appctx.Failed(r.Ctx) {
+		//~ t.Log(r.Resp.Error())
+		//~ t.Error("app.Handle should not fail")
+	//~ }
+	//~ body := strings.TrimSpace(string(r.Resp.Body()))
+	//~ if body != "testing" {
+		//~ t.Error("invalid resp body:", body)
+	//~ }
+//~ }
 
 func TestAppHandleViewNotFound(t *testing.T) {
 	tapp := newTestApp()

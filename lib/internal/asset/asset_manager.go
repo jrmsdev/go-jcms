@@ -1,13 +1,11 @@
 package asset
 
 import (
+	"path/filepath"
 	"io/ioutil"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
-	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 )
-
-var log = logger.New("asset_manager")
 
 var manager Manager
 
@@ -31,8 +29,8 @@ func SetManager(newmanager Manager) {
 	}
 }
 
-func (m *assetManager) ReadFile(name string) ([]byte, error) {
-	fn := env.WebappFile(name)
-	log.D("ReadFile %s", fn)
+func (m *assetManager) ReadFile(parts ...string) ([]byte, error) {
+	fn := env.WebappFile(filepath.Join(parts...))
+	log.D("ioutil ReadFile %s", fn)
 	return ioutil.ReadFile(fn)
 }

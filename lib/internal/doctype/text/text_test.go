@@ -2,7 +2,7 @@ package text
 
 import (
 	"net/http"
-	"strings"
+	//~ "strings"
 	"testing"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/context/appctx"
@@ -22,20 +22,20 @@ func TestEngine(t *testing.T) {
 	}
 }
 
-func TestHandle(t *testing.T) {
-	r := testeng.Handle(t, testengName, &testeng.Query{})
-	if appctx.Failed(r.Ctx) {
-		t.Error("handle context should not fail:", r.Resp.Error())
-	}
-	status := r.Resp.Status()
-	if status != http.StatusOK {
-		t.Error("invalid resp status:", status)
-	}
-	body := strings.TrimSpace(string(r.Resp.Body()))
-	if body != "testing" {
-		t.Error("invalid resp body:", body)
-	}
-}
+//~ func TestHandle(t *testing.T) {
+	//~ r := testeng.Handle(t, testengName, &testeng.Query{})
+	//~ if appctx.Failed(r.Ctx) {
+		//~ t.Error("handle context should not fail:", r.Resp.Error())
+	//~ }
+	//~ status := r.Resp.Status()
+	//~ if status != http.StatusOK {
+		//~ t.Error("invalid resp status:", status)
+	//~ }
+	//~ body := strings.TrimSpace(string(r.Resp.Body()))
+	//~ if body != "testing" {
+		//~ t.Error("invalid resp body:", body)
+	//~ }
+//~ }
 
 func TestHandleNotFound(t *testing.T) {
 	r := testeng.Handle(t, testengName, &testeng.Query{Path: "/invaliduri"})

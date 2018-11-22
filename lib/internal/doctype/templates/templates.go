@@ -3,15 +3,14 @@ package templates
 import (
 	"context"
 	"html/template"
-	"io/ioutil"
 	"net/http"
 	"path"
 	"path/filepath"
 
+	"github.com/jrmsdev/go-jcms/lib/internal/asset"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/base"
 	"github.com/jrmsdev/go-jcms/lib/internal/doctype/templates/funcs"
-	"github.com/jrmsdev/go-jcms/lib/internal/fsutils"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/request"
 	"github.com/jrmsdev/go-jcms/lib/internal/response"
@@ -40,7 +39,6 @@ func (e *engine) Handle(
 	docroot string,
 ) context.Context {
 	var (
-		ok        bool
 		maintplfn string
 		viewtplfn string
 	)
@@ -48,17 +46,8 @@ func (e *engine) Handle(
 	args := cfg.View.Args
 	// get template files
 	layout := args.Get("layout", "main").String()
-	maintplfn, ok = getMainTpl(cfg, docroot, layout)
-	if !ok {
-		log.E("main template not found: %s", maintplfn)
-		return resp.SetError(ctx, http.StatusInternalServerError,
-			"main template not found")
-	}
-	viewtplfn, ok = getViewTpl(cfg, req, docroot, req.URL.Path)
-	if !ok {
-		log.E("view template not found: %s", viewtplfn)
-		return resp.SetError(ctx, http.StatusNotFound, "not found")
-	}
+	maintplfn = getMainTpl(cfg, docroot, layout)
+	viewtplfn = getViewTpl(cfg, docroot, req.URL.Path)
 	// templates data
 	tpldata := newData()
 	return tplHandle(ctx, resp, req, cfg, docroot,
@@ -73,23 +62,12 @@ func (e *engine) HandleError(
 	docroot string,
 ) context.Context {
 	var (
-		ok        bool
 		maintplfn string
 		viewtplfn string
 	)
 	// get error templates
-	maintplfn, ok = getMainTpl(cfg, docroot, "error")
-	if !ok {
-		log.E("error layout not found: %s", maintplfn)
-		return resp.SetError(ctx, http.StatusInternalServerError,
-			"error layout not found")
-	}
-	viewtplfn, ok = getViewTpl(cfg, req, docroot, "error")
-	if !ok {
-		log.E("error template not found: %s", viewtplfn)
-		return resp.SetError(ctx, http.StatusNotFound,
-			"error template not found")
-	}
+	maintplfn = getMainTpl(cfg, docroot, "error")
+	viewtplfn = getViewTpl(cfg, docroot, "error")
 	// templates data
 	tpldata := newErrorData()
 	return tplHandle(ctx, resp, req, cfg, docroot,
@@ -143,33 +121,20 @@ func tplHandle(
 	return ctx
 }
 
-func getMainTpl(cfg *settings.Reader, docroot, layout string) (string, bool) {
-	filename := filepath.Join(docroot, layout+".tpl")
-	if !fsutils.FileExists(filename) {
-		return filename, false
-	}
-	return filename, true
+func getMainTpl(cfg *settings.Reader, docroot, layout string) string {
+	return filepath.Join(docroot, layout+".tpl")
 }
 
-func getViewTpl(
-	cfg *settings.Reader,
-	req *request.Request,
-	docroot string,
-	fn string,
-) (string, bool) {
+func getViewTpl(cfg *settings.Reader, docroot string, fn string) string {
 	fn = path.Clean(fn)
 	if fn == "" || fn == "/" {
 		fn = "index"
 	}
-	filename := filepath.Clean(filepath.Join(docroot, fn+".html"))
-	if !fsutils.FileExists(filename) {
-		return filename, false
-	}
-	return filename, true
+	return filepath.Join(docroot, fn+".html")
 }
 
 func parseMainTpl(docroot, fn string) (*template.Template, error) {
-	content, err := ioutil.ReadFile(fn)
+	content, err := asset.ReadFile(fn)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +143,7 @@ func parseMainTpl(docroot, fn string) (*template.Template, error) {
 }
 
 func parseViewTpl(main *template.Template, fn string) (*template.Template, error) {
-	content, err := ioutil.ReadFile(fn)
+	content, err := asset.ReadFile(fn)
 	if err != nil {
 		return nil, err
 	}

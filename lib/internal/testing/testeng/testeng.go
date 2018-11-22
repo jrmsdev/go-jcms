@@ -90,7 +90,7 @@ func testappEnv(appname string) string {
 		"go-jcms", "webapps", "testing")
 	os.Setenv("JCMS_WEBAPP", appname)
 	os.Setenv("JCMS_BASEDIR", basedir)
-	return filepath.Join(basedir, appname, "docroot")
+	return filepath.Join(appname, "docroot")
 }
 
 func getCfg(
