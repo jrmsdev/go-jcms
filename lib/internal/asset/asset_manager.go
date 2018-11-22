@@ -33,6 +33,13 @@ func SetManager(newmanager Manager) {
 func (m *assetManager) Open(filename string) (api.AssetFile, error) {
 	fn := env.WebappFile(filename)
 	log.D("os Open %s", fn)
+	fi, err := os.Stat(fn)
+	if err != nil {
+		return nil, err
+	}
+	if fi.IsDir() {
+		return nil, &os.PathError{"open", fn, os.ErrNotExist}
+	}
 	return os.Open(fn)
 }
 

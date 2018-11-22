@@ -4,7 +4,7 @@ import (
 	"os"
 	"net/http"
 	"path/filepath"
-	//~ "io/ioutil"
+	"errors"
 
 	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 	"github.com/jrmsdev/go-jcms/lib/internal/asset"
@@ -48,8 +48,7 @@ func newFile(fn string, fh api.AssetFile) http.File {
 
 func (f *file) Readdir(count int) ([]os.FileInfo, error) {
 	log.D("Readdir %s", f.name)
-	log.Panic("static handler Readdir not implemented")
-	return nil, nil
+	return nil, errors.New("dir not found")
 }
 
 func (f *file) Stat() (os.FileInfo, error) {
