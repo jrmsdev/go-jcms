@@ -4,8 +4,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
+	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 )
 
 var log = logger.New("asset")

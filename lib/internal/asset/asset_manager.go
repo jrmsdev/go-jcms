@@ -1,11 +1,11 @@
 package asset
 
 import (
-	"os"
 	"io/ioutil"
+	"os"
 
-	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 	"github.com/jrmsdev/go-jcms/lib/internal/env"
+	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 )
 
 var manager Manager

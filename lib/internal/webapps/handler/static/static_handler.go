@@ -1,16 +1,16 @@
 package static
 
 import (
-	"os"
-	"net/http"
-	"path/filepath"
 	"errors"
+	"net/http"
+	"os"
+	"path/filepath"
 
-	"github.com/jrmsdev/go-jcms/lib/jcms/api"
-	"github.com/jrmsdev/go-jcms/lib/internal/asset"
 	"github.com/jrmsdev/go-jcms/lib/internal/app"
+	"github.com/jrmsdev/go-jcms/lib/internal/asset"
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
+	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 )
 
 var log = logger.New("static.handler")
