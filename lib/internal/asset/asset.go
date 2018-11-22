@@ -1,7 +1,9 @@
 package asset
 
 import (
+	"os"
 	"io"
+	"path/filepath"
 
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 )
@@ -14,11 +16,28 @@ type File interface {
 }
 
 type Manager interface {
-	ReadFile(parts ...string) ([]byte, error)
+	Open(filename string) (File, error)
+	Stat(filename string) (os.FileInfo, error)
+	ReadFile(name string) ([]byte, error)
 }
 
 func ReadFile(parts ...string) ([]byte, error) {
-	log.D("ReadFile %#v", parts)
+	fn := filepath.Join(parts...)
+	log.D("ReadFile %s", fn)
 	checkManager()
-	return manager.ReadFile(parts...)
+	return manager.ReadFile(fn)
+}
+
+func Open(parts ...string) (File, error) {
+	fn := filepath.Join(parts...)
+	log.D("Open %s", fn)
+	checkManager()
+	return manager.Open(fn)
+}
+
+func Stat(parts ...string) (os.FileInfo, error) {
+	fn := filepath.Join(parts...)
+	log.D("Stat %s", fn)
+	checkManager()
+	return manager.Stat(fn)
 }
