@@ -1,31 +1,26 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"path"
 	"path/filepath"
 
+	"github.com/jrmsdev/go-jcms/bin/internal/flags"
 	"github.com/jrmsdev/go-jcms/lib/jcms"
 )
 
 var log = jcms.Logger("jcms-devel")
-var loglevel string
-
-func init() {
-	flag.StringVar(&loglevel, "log", "debug", "set log `level`")
-}
 
 func main() {
 	// parse command args
-	flag.Parse()
-	uri := path.Clean(flag.Arg(0))
-	if uri == "." || uri == "" {
-		uri = "/"
+	flags.Parse()
+	req := path.Clean(flags.Arg(0))
+	if req == "." || req == "" {
+		req = "/"
 	}
 	// jcms log
-	err := jcms.LogStart(loglevel, os.Stderr)
+	err := jcms.LogStart(flags.LogLevel, os.Stderr)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -47,5 +42,5 @@ func main() {
 		log.Panic(err.Error())
 	}
 	// launch webview
-	Webview(uri)
+	Webview(flags.HttpAddr, req)
 }

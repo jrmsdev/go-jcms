@@ -13,17 +13,17 @@ const (
 	webviewHeight = 600
 )
 
-func Webview(req string) {
-	uri, err := url.Parse(jcms.Listen())
+func Webview(addr, req string) {
+	uri, err := url.Parse(jcms.Listen(addr))
 	if err != nil {
 		log.Panic(err.Error())
 	}
 	go func() {
 		jcms.Serve()
 	}()
+	defer jcms.Stop()
 	uri.Path = req
 	log.D("open %s", uri.String())
 	xwv.Open("JCMS Devel", uri.String(),
 		webviewWidth, webviewHeight, webviewResize)
-	jcms.Stop()
 }

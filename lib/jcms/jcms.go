@@ -15,9 +15,12 @@ var log = logger.New("jcms")
 var listening = false
 var webappsStarted = false
 
-func Listen() string {
+func Listen(addr string) string {
 	log.Print("version %s", version.String())
-	uri := httpd.Listen()
+	if addr == "" {
+		addr = "127.0.0.1:0"
+	}
+	uri := httpd.Listen(addr)
 	log.Print("%s", uri.String())
 	listening = true
 	return uri.String()

@@ -11,24 +11,24 @@ import (
 )
 
 var log = logger.New("httpd")
-var addr = "127.0.0.1:0"
 var servemux = http.NewServeMux()
 var listener net.Listener
 
 var server = &http.Server{
-	Addr:           addr,
+	Addr:           ":0",
 	Handler:        servemux,
 	ReadTimeout:    10 * time.Second,
 	WriteTimeout:   10 * time.Second,
 	MaxHeaderBytes: 1 << 20,
 }
 
-func Listen() *url.URL {
+func Listen(addr string) *url.URL {
 	var err error
 	listener, err = net.Listen("tcp4", addr)
 	if err != nil {
 		log.Panic(err.Error())
 	}
+	server.Addr = addr
 	url := &url.URL{}
 	url.Scheme = "http"
 	url.Host = listener.Addr().String()
