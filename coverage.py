@@ -72,8 +72,8 @@ COVERR = '''
 def testcover (pkg):
     oldwd = os.getcwd ()
     os.chdir (path.join (GOPATH, 'src', pkg))
-    errfd, errfn = mkstemp (prefix = 'go-jcms.test.coverage.out')
-    outfd, outfn = mkstemp (prefix = 'go-jcms.test.coverage.err')
+    errfd, errfn = mkstemp (prefix = 'go-jcms.test.coverage.err')
+    outfd, outfn = mkstemp (prefix = 'go-jcms.test.coverage.out')
     try:
         check_call ('go test -coverprofile coverage.out'.split (),
                 stderr = errfd, stdout = outfd)
@@ -120,14 +120,13 @@ def covdone (pkg, outfn):
             covinfo = line
             break
     fh.close ()
-    covp = int(covinfo.strip().split()[1].split('.')[0])
-    covlevel = int(covp / 10)
-    print (COVDONE.format (
-        href = href,
-        pkg = pkg,
-        covinfo = covinfo,
-        covlevel = covlevel,
-    ), file = INDEX_FH)
+    if covinfo == '':
+        covmiss (pkg)
+    else:
+        covp = int(covinfo.strip().split()[1].split('.')[0])
+        covlevel = int(covp / 10)
+        print (COVDONE.format (href = href, pkg = pkg, covinfo = covinfo,
+               covlevel = covlevel), file = INDEX_FH)
 
 def covmiss (pkg):
     print (COVMISS.format (pkg), file = INDEX_FH)
@@ -140,7 +139,7 @@ if __name__ == '__main__':
     os.makedirs (DOCROOT, exist_ok = True)
     INDEX_FH = open (INDEX_FN, 'w')
     print (HTML_HEAD, file = INDEX_FH)
-    gopatt = './...'
+    gopatt = './lib/...'
     if len (sys.argv) == 2:
         gopatt = path.join ('github.com', 'jrmsdev', 'go-jcms', sys.argv[1])
     for pkg in check_output(['go', 'list', gopatt]).decode().splitlines():
