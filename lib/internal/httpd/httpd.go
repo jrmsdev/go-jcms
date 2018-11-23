@@ -54,7 +54,7 @@ func Stop() {
 	defer cancel()
 	err := server.Shutdown(ctx)
 	if err != nil {
-		log.E("shutdown:", err)
+		log.E("shutdown: %s", err)
 	}
 }
 

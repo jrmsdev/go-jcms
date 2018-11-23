@@ -18,7 +18,7 @@ func Register(name string, eng Engine) {
 	if exists {
 		panic("doctype engine already registered: " + name)
 	}
-	log.D("register engine:", name)
+	log.D("register engine: %s", name)
 	engMap[name] = eng
 }
 

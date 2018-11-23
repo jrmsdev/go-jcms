@@ -54,7 +54,7 @@ func (e *engine) Handle(
 ) context.Context {
 	filename, ok := getFilename(cfg, req, docroot)
 	if !ok {
-		log.E("file not found:", filename)
+		log.E("file not found: %s", filename)
 		return resp.SetError(ctx,
 			http.StatusNotFound, "file not found")
 	}

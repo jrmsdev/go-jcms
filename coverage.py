@@ -37,7 +37,7 @@ HTML_HEAD = '''
             .cov9 { color: rgb(32, 224, 152) }
             .cov10 { color: rgb(20, 236, 155) }
         </style>
-        <title>gojc tests overage</title>
+        <title>go-jcms tests overage</title>
     </head>
     <body>
         <div id="content">
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     print (HTML_HEAD, file = INDEX_FH)
     gopatt = './...'
     if len (sys.argv) == 2:
-        gopatt = path.join ('github.com', 'jrmsdev', 'gojc', sys.argv[1])
+        gopatt = path.join ('github.com', 'jrmsdev', 'go-jcms', sys.argv[1])
     for pkg in check_output(['go', 'list', gopatt]).decode().splitlines():
         testcover (pkg)
     now = asctime ()

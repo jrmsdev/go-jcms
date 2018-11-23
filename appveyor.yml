@@ -7,22 +7,16 @@ clone_folder: c:\golang\src\github.com\jrmsdev\go-jcms
 environment:
   global:
     GOPATH: C:\golang
-    GOVERSION: 1.x
+    GETH_ARCH: amd64
+    GOARCH: amd64
+    CGO_ENABLED: 1
+    MSYS2_ARCH: x86_64
+    MSYS2_BITS: 64
+    MSYSTEM: MINGW64
+    PATH: C:\msys64\mingw64\bin\;C:\Program Files (x86)\NSIS\;%PATH%
   matrix:
-    - GETH_ARCH: amd64
-      GOARCH: amd64
-      CGO_ENABLED: 1
-      MSYS2_ARCH: x86_64
-      MSYS2_BITS: 64
-      MSYSTEM: MINGW64
-      PATH: C:\msys64\mingw64\bin\;C:\Program Files (x86)\NSIS\;%PATH%
-    - GETH_ARCH: 386
-      GOARCH: 386
-      CGO_ENABLED: 1
-      MSYS2_ARCH: i686
-      MSYS2_BITS: 32
-      MSYSTEM: MINGW32
-      PATH: C:\msys64\mingw32\bin\;C:\Program Files (x86)\NSIS\;%PATH%
+    - GOVERSION: 1.10.x
+    - GOVERSION: 1.x
 
 install:
   - echo %GOPATH%
@@ -33,10 +27,16 @@ install:
 
 build_script:
   - echo %time%
-  - go install -i ./lib/... ./bin/jcms
+  - go install -i ./bin/jcms
+  - echo %time%
+  - go get -t -v ./lib/...
   - echo %time%
 
 test_script:
   - echo %time%
+  - go vet ./lib/...
+  - echo %time%
   - go test ./lib/...
+  - echo %time%
+  - go test -race ./lib/...
   - echo %time%

@@ -6,7 +6,7 @@ import (
 )
 
 type Args struct {
-	prefix string            `json:"omit"`
+	prefix string
 	Args   map[string]string `json:",omitempty"`
 }
 
