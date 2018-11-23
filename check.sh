@@ -1,0 +1,3 @@
+#!/bin/sh -eux
+go vet ./bin/... ./lib/...
+go test ./lib/... | grep -F FAIL

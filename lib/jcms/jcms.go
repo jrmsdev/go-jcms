@@ -7,6 +7,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/internal/httpd"
 	"github.com/jrmsdev/go-jcms/lib/internal/logger"
 	"github.com/jrmsdev/go-jcms/lib/internal/webapps"
+	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 	"github.com/jrmsdev/go-jcms/lib/jcms/version"
 )
 
@@ -62,6 +63,6 @@ func LogStop() {
 	}
 }
 
-func SetAssetManager(newmanager asset.Manager) {
+func SetAssetManager(newmanager api.AssetManager) {
 	asset.SetManager(newmanager)
 }

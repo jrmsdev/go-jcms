@@ -8,7 +8,7 @@ import (
 	"github.com/jrmsdev/go-jcms/lib/jcms/api"
 )
 
-var manager Manager
+var manager api.AssetManager
 
 type assetManager struct{}
 
@@ -22,7 +22,7 @@ func checkManager() {
 	}
 }
 
-func SetManager(newmanager Manager) {
+func SetManager(newmanager api.AssetManager) {
 	if manager != nil {
 		log.Panic("asset manager already initialized")
 	} else {

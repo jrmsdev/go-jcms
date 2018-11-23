@@ -10,12 +10,6 @@ import (
 
 var log = logger.New("asset")
 
-type Manager interface {
-	Open(filename string) (api.AssetFile, error)
-	Stat(filename string) (os.FileInfo, error)
-	ReadFile(name string) ([]byte, error)
-}
-
 func ReadFile(parts ...string) ([]byte, error) {
 	fn := filepath.Join(parts...)
 	log.D("ReadFile %s", fn)
