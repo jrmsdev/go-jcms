@@ -16,7 +16,6 @@ environment:
     GOPATH: C:\golang
     GOARCH: amd64
   matrix:
-    - GOROOT: C:\go110
     - GOROOT: C:\go
 
 matrix:
@@ -27,7 +26,6 @@ install:
   - set PATH=%GOPATH%\bin;%GOROOT%\bin;%PATH%
   - go version
   - go env
-  - gcc --version
 
 build_script:
   - echo %time%
