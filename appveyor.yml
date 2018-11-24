@@ -1,8 +1,15 @@
-os: Visual Studio 2017
+# https://www.appveyor.com/docs/appveyor-yml/
+
+image: Visual Studio 2017
 
 version: "build{build}"
 
+branches:
+  only:
+    - master
+
 clone_folder: c:\golang\src\github.com\jrmsdev\go-jcms
+clone_depth: 5
 
 environment:
   global:
@@ -15,8 +22,12 @@ environment:
     MSYSTEM: MINGW64
     PATH: C:\msys64\mingw64\bin\;C:\Program Files (x86)\NSIS\;%PATH%
   matrix:
-    - GOVERSION: 1.10.x
-    - GOVERSION: 1.x
+    - GOVERSION: "1.10.x"
+    - GOVERSION: "1.x"
+    - GOVERSION: master
+
+matrix:
+  fast_finish: true
 
 install:
   - echo %GOPATH%
@@ -32,6 +43,9 @@ build_script:
   - go get -t -v ./lib/...
   - echo %time%
 
+after_build:
+  - 7z a -tzip jcms-windows-%GOARCH%-$(version).zip %GOPATH%\bin\jcms.exe %GOPATH%\pkg\windows_amd64\github.com\jrmsdev\go-jcms\ -mx9
+
 test_script:
   - echo %time%
   - go vet ./lib/...
@@ -40,3 +54,8 @@ test_script:
   - echo %time%
   - go test -race ./lib/...
   - echo %time%
+
+artifacts:
+  - path: 'jcms-windows-*.zip'
+
+deploy: off

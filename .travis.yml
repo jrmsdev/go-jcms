@@ -1,18 +1,39 @@
+sudo: false
 language: go
 
 go:
   - "1.10.x"
   - "1.x"
+  - master
+
+git:
+  depth: 5
+  submodules: false
+
+branches:
+  only:
+    - master
 
 matrix:
   include:
-    - os: linux
     - os: osx
       osx_image: xcode8.3
+      go: master
+
+addons:
+  artifacts:
+    paths:
+      - jcms-*.txz
+
+before_install:
+  - env | sort
 
 install:
   - time go install -i ./bin/jcms
   - time go get -t -v ./lib/...
+
+after_success:
+  - tar -cJf jcms-${TRAVIS_OS_NAME}-amd64-build${TRAVIS_BUILD_NUMBER}.txz ${GOPATH}/bin/jcms ${GOPATH}/pkg/*/github.com/jrmsdev/go-jcms
 
 script:
   - time go vet ./lib/...
