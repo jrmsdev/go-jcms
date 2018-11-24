@@ -14,24 +14,17 @@ clone_depth: 5
 environment:
   global:
     GOPATH: C:\golang
-    GETH_ARCH: amd64
     GOARCH: amd64
-    CGO_ENABLED: 1
-    MSYS2_ARCH: x86_64
-    MSYS2_BITS: 64
-    MSYSTEM: MINGW64
-    PATH: C:\msys64\mingw64\bin\;C:\Program Files (x86)\NSIS\;%PATH%
   matrix:
-    - GOVERSION: "1.10.x"
-    - GOVERSION: "1.x"
-    - GOVERSION: master
+    - GOROOT: C:\go110
+    - GOROOT: C:\go
 
 matrix:
   fast_finish: true
 
 install:
   - echo %GOPATH%
-  - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
+  - set PATH=%GOPATH%\bin;%GOROOT%\bin;%PATH%
   - go version
   - go env
   - gcc --version
@@ -44,7 +37,7 @@ build_script:
   - echo %time%
 
 after_build:
-  - 7z a -tzip jcms-windows-%GOARCH%-$(version).zip %GOPATH%\bin\jcms.exe %GOPATH%\pkg\windows_amd64\github.com\jrmsdev\go-jcms\ -mx9
+  - 7z a -tzip jcms-windows-%GOARCH%-build%APPVEYOR_BUILD_NUMBER%.zip %GOPATH%\bin\jcms.exe %GOPATH%\pkg\windows_amd64\github.com\jrmsdev\go-jcms\ -mx9
 
 test_script:
   - echo %time%

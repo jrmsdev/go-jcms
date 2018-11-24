@@ -20,11 +20,6 @@ matrix:
       osx_image: xcode8.3
       go: master
 
-addons:
-  artifacts:
-    paths:
-      - jcms-*.txz
-
 before_install:
   - env | sort
 
