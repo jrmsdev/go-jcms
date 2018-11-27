@@ -15,6 +15,12 @@ var log = logger.New("jcms")
 var listening = false
 var webappsStarted = false
 
+func init() {
+	if os.Getuid() == 0 || os.Geteuid() == 0 {
+		panic("do not run as root")
+	}
+}
+
 func Listen(addr string) string {
 	log.Print("version %s", version.String())
 	if addr == "" {
