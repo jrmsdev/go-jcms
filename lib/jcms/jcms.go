@@ -50,7 +50,7 @@ func Stop() {
 		listening = false
 	} else {
 		log.E("trying to stop a not listening server...")
-		log.Panic("jcms.Listen() and jcms.Server() should be called first")
+		log.Panic("jcms.Listen() and jcms.Serve() should be called first")
 	}
 }
 
